@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Xml.Serialization;
 using pixel_miner.Components.Gameplay;
 using pixel_miner.Core;
@@ -34,6 +35,12 @@ namespace pixel_miner.Components.Movement
 
             targetPosition = target;
             IsMoving = true;
+        }
+
+        public override void Stop()
+        {
+            IsMoving = false;
+            ClearMoveQueue();
         }
 
         public override void Update(float deltaTime)
@@ -82,6 +89,11 @@ namespace pixel_miner.Components.Movement
         public void ClearMoveQueue()
         {
             moveQueue.Clear();
+        }
+
+        public bool HasQueuedMoves()
+        {
+            return moveQueue.Count > 0;
         }
     }
 }
