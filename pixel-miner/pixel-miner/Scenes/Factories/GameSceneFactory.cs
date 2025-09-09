@@ -28,7 +28,7 @@ namespace pixel_miner.Scenes.Factories
             scene.AddGameObject(player);
 
             // Create camera that follows player
-            var camera = CreateBasicCamera(player);
+            var camera = CreatePlayerCamera(player);
             var cameraComponent = camera.GetComponent<Camera>();
             scene.AddGameObject(camera);
 
@@ -38,6 +38,9 @@ namespace pixel_miner.Scenes.Factories
 
             scene.AddGameObject(ref1);
             scene.AddGameObject(ref2);
+
+            var hud = CreateHUDCamera();
+            scene.AddGameObject(hud);
 
             // Add a percentage bar to the UI
             var percentageBar = new GameObject("TestPercentageBar");
@@ -77,6 +80,33 @@ namespace pixel_miner.Scenes.Factories
             inputController.Initialize(session);
 
             return player;
+        }
+
+        private GameObject CreatePlayerCamera(GameObject? player = null)
+        {
+            var cameraObject = new GameObject("PlayerCamera", 0, 0);
+            var playerCamera = cameraObject.AddComponent<FollowCamera>();
+
+            if (player != null)
+            {
+                playerCamera.SetTarget(player);
+            }
+
+            playerCamera.SetName(cameraObject.Name);
+            playerCamera.FollowSpeed = 5f;
+            CameraManager.AddCamera(playerCamera, isMainCamera: true);
+
+            return cameraObject;
+        }
+
+        private GameObject CreateHUDCamera()
+        {
+            var gameObject = new GameObject("HUD", 0, 0);
+            var hudCamera = gameObject.AddComponent<HUDCamera>();
+
+            CameraManager.AddCamera(hudCamera);
+
+            return gameObject;
         }
     }
 }

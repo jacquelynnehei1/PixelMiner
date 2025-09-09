@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using SFML.System;
 
-namespace pixel_miner.Utils
+namespace pixel_miner.Utils.Extensions
 {
     public static class Vector2fExtensions
     {

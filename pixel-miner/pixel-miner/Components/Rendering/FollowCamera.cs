@@ -1,0 +1,42 @@
+using pixel_miner.Core;
+using pixel_miner.Utils.Extensions;
+using SFML.System;
+
+namespace pixel_miner.Components.Rendering
+{
+    public class FollowCamera : Camera
+    {
+        public GameObject? Target { get; set; }
+        public float FollowSpeed { get; set; } = 5f;
+
+        public override void Update(float deltaTime)
+        {
+            if (Transform == null) return;
+
+            if (Target != null && Target.Transform != null)
+            {
+                Vector2f targetPos = Target.Transform.Position;
+                Vector2f currentPos = Transform.Position;
+
+                Vector2f newPos = currentPos.Lerp(targetPos, FollowSpeed * deltaTime);
+
+                if (Bounds.X != float.MaxValue)
+                {
+                    newPos.X = Math.Max(-Bounds.X / 2f, Math.Min(Bounds.X / 2f, newPos.X));
+                }
+
+                if (Bounds.Y != float.MaxValue)
+                {
+                    newPos.Y = Math.Max(-Bounds.Y / 2f, Math.Min(Bounds.Y / 2f, newPos.Y));
+                }
+
+                Transform.Position = newPos;
+            }
+        }
+
+        public void SetTarget(GameObject target)
+        {
+            Target = target;
+        }
+    }
+}

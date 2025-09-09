@@ -1,8 +1,5 @@
-using System.Collections.Concurrent;
-using System.Xml.Serialization;
-using pixel_miner.Components.Gameplay;
 using pixel_miner.Core;
-using pixel_miner.Utils;
+using pixel_miner.Utils.Extensions;
 using pixel_miner.World;
 using SFML.System;
 

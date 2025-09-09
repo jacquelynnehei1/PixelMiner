@@ -15,15 +15,7 @@ namespace pixel_miner.Scenes.Factories
         {
             var cameraObject = new GameObject("MainCamera", 0, 0);
             var camera = cameraObject.AddComponent<Camera>();
-
-            if (target != null)
-            {
-                camera.SetTarget(target);
-            }
-
-            camera.FollowSpeed = 5f;
-            CameraManager.SetMainCamera(camera);
-
+            CameraManager.AddCamera(camera, isMainCamera: true);
             return cameraObject;
         }
 
