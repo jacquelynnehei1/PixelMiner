@@ -29,8 +29,8 @@ namespace pixel_miner.Utils
             var path = new Queue<GridPosition>();
             var current = from;
 
-            HandleHorizontalMoves(from, to, ref path);
-            HandleVerticalMoves(from, to, ref path);
+            current = HandleHorizontalMoves(current, to, ref path);
+            current =HandleVerticalMoves(current, to, ref path);
 
             return path;
         }
@@ -40,8 +40,8 @@ namespace pixel_miner.Utils
             var path = new Queue<GridPosition>();
             var current = from;
 
-            HandleVerticalMoves(from, to, ref path);
-            HandleHorizontalMoves(from, to, ref path);
+            current = HandleVerticalMoves(current, to, ref path);
+            current = HandleHorizontalMoves(current, to, ref path);
 
             return path;
         }

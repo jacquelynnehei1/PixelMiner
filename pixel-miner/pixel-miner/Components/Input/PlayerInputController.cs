@@ -37,7 +37,7 @@ namespace pixel_miner.Components.Input
 
         private void CheckMovementInput()
         {
-            if (gameSession == null) return;
+            if (gameSession == null || gameSession.IsGameOver) return;
 
             for (int i = 0; i < keyMappings.Length; i++)
             {
@@ -63,7 +63,6 @@ namespace pixel_miner.Components.Input
                 if (restartCurrently && !restartPressed)
                 {
                     gameSession.RestartGame();
-                    Console.WriteLine("Game restarted! Press WASD to move.");
                 }
 
                 restartPressed = restartCurrently;

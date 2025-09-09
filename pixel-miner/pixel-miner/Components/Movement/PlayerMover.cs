@@ -35,7 +35,7 @@ namespace pixel_miner.Components.Movement
             targetPosition = target;
             IsMoving = true;
         }
- 
+
         public override void Update(float deltaTime)
         {
             if (!IsMoving || Transform == null) return;
@@ -77,6 +77,11 @@ namespace pixel_miner.Components.Movement
         public void SetBoard(Board gameBoard)
         {
             board = gameBoard;
+        }
+
+        public void ClearMoveQueue()
+        {
+            moveQueue.Clear();
         }
     }
 }

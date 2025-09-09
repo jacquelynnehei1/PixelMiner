@@ -17,6 +17,7 @@ namespace pixel_miner.Components.Gameplay
         {
             gameSession = session;
             gameSession.OnPlayerMoved += OnPlayerMoved;
+            gameSession.OnClearMoveQueue += OnClearMoveQueue;
         }
 
         public override void Start()
@@ -42,6 +43,13 @@ namespace pixel_miner.Components.Gameplay
                 var worldPosition = gameSession.Board.GridToWorldPosition(to);
                 mover.QueueMove(worldPosition);
             }
+        }
+
+        private void OnClearMoveQueue()
+        {
+            if (mover == null) return;
+            
+            mover.ClearMoveQueue();
         }
 
         public override void Destroy()

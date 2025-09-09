@@ -24,6 +24,7 @@ namespace pixel_miner.Core
         public event Action<GridPosition, GridPosition>? OnPlayerMoved;
         public event Action<int>? OnFuelChanged;
         public event Action<string>? OnGameOver;
+        public event Action? OnClearMoveQueue;
 
         public GameSession()
         {
@@ -74,18 +75,30 @@ namespace pixel_miner.Core
 
         public void RestartGame()
         {
+            OnClearMoveQueue?.Invoke();
+
             var currentPosition = PlayerData.GridPosition;
             var startPosition = new GridPosition(0, 0);
+
+            Console.WriteLine($"Restarting from {currentPosition} to {startPosition}");
 
             if (!currentPosition.Equals(startPosition))
             {
                 var path = Pathfinder.CalculatePath(currentPosition, startPosition);
-
-                foreach (var gridPosition in path)
+                Console.WriteLine("Raw path from pathfinder: ");
+                foreach (var step in path)
                 {
-                    var direction = gridPosition - PlayerData.GridPosition;
-                    HandleMoveRequest(direction, bypassFuelCheck: true);
+                    Console.WriteLine($"Step: {step}");
                 }
+
+                var currentStep = currentPosition;
+                foreach (var nextStep in path)
+                {
+                    var direction = nextStep - currentStep;
+                    Console.WriteLine($"Moving from {currentStep} to {nextStep}, direction: {direction}");
+                    HandleMoveRequest(direction, bypassFuelCheck: true);
+                    currentStep = nextStep;
+                }        
             }
 
             // Reset player data
@@ -120,7 +133,6 @@ namespace pixel_miner.Core
             {
                 IsGameOver = true;
                 GameOverReason = "Out of fuel!";
-                Console.WriteLine(GameOverReason);
                 OnGameOver?.Invoke(GameOverReason);
             }
         }
