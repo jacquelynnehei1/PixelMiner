@@ -17,49 +17,33 @@ namespace pixel_miner.Components.Gameplay
         {
             gameSession = session;
             gameSession.OnPlayerMoved += OnPlayerMoved;
-            gameSession.PlayerData.OnPositionChanged += OnPositionChanged;
         }
 
         public override void Start()
         {
+            if (gameSession == null || Transform == null) return;
+
+            var initialWorldPosition = gameSession.Board.GridToWorldPosition(gameSession.PlayerData.GridPosition);
+            Transform.Position = initialWorldPosition;
+
             mover = GameObject.GetComponent<PlayerMover>();
 
-            if (gameSession != null && Transform != null)
-            {
-                var initialWorldPosition = gameSession.Board.GridToWorldPosition(gameSession.PlayerData.GridPosition);
-                Transform.Position = initialWorldPosition;
-            }
+            if (mover == null) return;
+
+            mover.SetBoard(gameSession.Board);
         }
 
         private void OnPlayerMoved(GridPosition from, GridPosition to)
         {
             if (gameSession == null) return;
 
+            Console.WriteLine("Player moved!");
+
             if (gameSession.Board != null && mover != null)
             {
                 var worldPosition = gameSession.Board.GridToWorldPosition(to);
-                mover.MoveTo(worldPosition);
+                mover.QueueMove(worldPosition);
             }
-        }
-
-        private void OnPositionChanged(GridPosition newGridPosition)
-        {
-            UpdateWorldPosition(newGridPosition);
-        }
-
-        private void UpdateWorldPosition(GridPosition gridPosition)
-        {
-            if (gameSession?.Board == null || Transform == null) return;
-
-            var worldPosition = gameSession.Board.GridToWorldPosition(gridPosition);
-
-            if (mover == null)
-            {
-                Transform.Position = worldPosition;
-                return;
-            }
-
-            mover.MoveTo(worldPosition);
         }
 
         public override void Destroy()
@@ -67,7 +51,6 @@ namespace pixel_miner.Components.Gameplay
             if (gameSession != null)
             {
                 gameSession.OnPlayerMoved -= OnPlayerMoved;
-                gameSession.PlayerData.OnPositionChanged -= OnPositionChanged;
             }
         }
     }
