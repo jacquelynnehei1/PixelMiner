@@ -54,9 +54,9 @@ namespace pixel_miner
             SceneManager.Destroy();
         }
         
-        static void OnKeyPressed(object sender, KeyEventArgs e)
+        static void OnKeyPressed(object? sender, KeyEventArgs e)
         {
-            var window = (RenderWindow)sender;
+            var window = (RenderWindow)sender!;
             if (e.Code == Keyboard.Key.Escape)
                 window.Close();
         }

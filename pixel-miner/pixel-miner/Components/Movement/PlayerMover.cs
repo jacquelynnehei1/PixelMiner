@@ -5,9 +5,7 @@ namespace pixel_miner.Components.Movement
 {
     public class PlayerMover : Mover
     {
-        private Vector2f startPosition;
         private Vector2f targetPosition;
-        private float progress = 0f;
 
         public override void Start()
         {
@@ -17,10 +15,7 @@ namespace pixel_miner.Components.Movement
         public override void MoveTo(Vector2f target)
         {
             if (Transform == null) return;
-
-            startPosition = Transform.Position;
             targetPosition = target;
-            progress = 0f;
             IsMoving = true;
         }
 

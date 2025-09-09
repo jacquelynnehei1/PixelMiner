@@ -19,7 +19,7 @@ namespace pixel_miner.Scenes.Factories
 
             gameSession.OnGameOver += (reason) =>
             {
-                Console.WriteLine($"Game Over: {reason}");
+                Console.WriteLine($"Game Over: {reason}. \nPress R to Restart!");
             };
 
             var player = CreatePlayer(ref gameSession);
@@ -42,6 +42,9 @@ namespace pixel_miner.Scenes.Factories
         private GameObject CreatePlayer(ref GameSession session)
         {
             var player = new GameObject("Player");
+
+            var initialWorldPosition = session.Board.GridToWorldPosition(session.PlayerData.GridPosition);
+            player.Transform.Position = initialWorldPosition;
 
             var playerMover = player.AddComponent<PlayerMover>();
             var playerComponent = player.AddComponent<Player>();

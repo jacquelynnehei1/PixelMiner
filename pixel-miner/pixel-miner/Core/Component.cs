@@ -4,8 +4,8 @@ namespace pixel_miner.Core
 {
     public abstract class Component
     {
-        public GameObject GameObject { get; internal set; }
-        public Transform Transform => GameObject?.GetComponent<Transform>();
+        public GameObject GameObject { get; internal set; } = null!;
+        public Transform Transform => GameObject?.GetComponent<Transform>()!;
         public bool Enabled { get; set; } = true;
         
 

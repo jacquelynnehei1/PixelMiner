@@ -48,7 +48,7 @@ namespace pixel_miner.Core
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public T GetComponent<T>() where T : Component
+        public T? GetComponent<T>() where T : Component
         {
             return components.OfType<T>().FirstOrDefault();
         }
