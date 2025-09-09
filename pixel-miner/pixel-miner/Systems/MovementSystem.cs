@@ -22,7 +22,7 @@ namespace pixel_miner.Systems
             playerData = player;
         }
 
-        public void RequestMove(GridPosition direction)
+        public void RequestMove(GridPosition direction, bool bypassFuelCheck = false)
         {
             var moveResult = board.ValidateMove(playerData.GridPosition, direction);
 
@@ -32,7 +32,7 @@ namespace pixel_miner.Systems
                 return;
             }
 
-            if (!playerData.HasFuel(moveResult.FuelCost))
+            if (!bypassFuelCheck && !playerData.HasFuel(moveResult.FuelCost))
             {
                 OnOutOfFuel?.Invoke();
                 return;
@@ -40,11 +40,13 @@ namespace pixel_miner.Systems
 
             var oldPosition = playerData.GridPosition;
 
-            if (playerData.TryConsumeFuel(moveResult.FuelCost))
+            if (!bypassFuelCheck)
             {
-                playerData.SetPosition(moveResult.TargetPosition);
-                OnPlayerMoved?.Invoke(oldPosition, moveResult.TargetPosition);
+                playerData.TryConsumeFuel(moveResult.FuelCost);
             }
+
+            playerData.SetPosition(moveResult.TargetPosition);
+            OnPlayerMoved?.Invoke(oldPosition, moveResult.TargetPosition);
         }
 
         public bool CanPlayerMove(GridPosition direction)

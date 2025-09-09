@@ -34,7 +34,6 @@ namespace pixel_miner.Data
             if (CurrentFuel < amount) return false;
 
             CurrentFuel = Math.Max(0, CurrentFuel - amount);
-            Console.WriteLine($"Fuel Used: {amount}, Current Fuel: {CurrentFuel}");
             OnFuelChanged?.Invoke(CurrentFuel);
             return true;
         }

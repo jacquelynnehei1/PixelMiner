@@ -37,8 +37,6 @@ namespace pixel_miner.Components.Gameplay
         {
             if (gameSession == null) return;
 
-            Console.WriteLine("Player moved!");
-
             if (gameSession.Board != null && mover != null)
             {
                 var worldPosition = gameSession.Board.GridToWorldPosition(to);

@@ -32,17 +32,13 @@ namespace pixel_miner.Components.Movement
         {
             if (Transform == null) return;
 
-            Console.WriteLine($"MoveTo called: targetPosition = {targetPosition}");
-
             targetPosition = target;
             IsMoving = true;
         }
-
+ 
         public override void Update(float deltaTime)
         {
             if (!IsMoving || Transform == null) return;
-
-            Console.WriteLine("Player Mover Update being called!");
 
             Vector2f currentPosition = Transform.Position;
             float distanceToTarget = currentPosition.Distance(targetPosition);
@@ -70,12 +66,10 @@ namespace pixel_miner.Components.Movement
         {
             if (moveQueue.Count == 0)
             {
-                Console.WriteLine("Queue processing complete!");
                 return;
             }
 
             var nextMove = moveQueue.Dequeue();
-            Console.WriteLine($"Processing queued move - {moveQueue.Count} remaining");
 
             MoveTo(nextMove);
         }

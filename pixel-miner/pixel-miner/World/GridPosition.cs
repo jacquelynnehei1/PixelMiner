@@ -22,6 +22,11 @@ namespace pixel_miner.World
             return new GridPosition(a.X + b.X, a.Y + b.Y);
         }
 
+        public static GridPosition operator -(GridPosition a, GridPosition b)
+        {
+            return new GridPosition(a.X - b.X, a.Y - b.Y);
+        }
+
         public bool Equals(GridPosition other)
         {
             return X == other.X && Y == other.Y;

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using pixel_miner.Data;
 using pixel_miner.Systems;
+using pixel_miner.Utils;
 using pixel_miner.World;
 
 namespace pixel_miner.Core
@@ -59,11 +60,11 @@ namespace pixel_miner.Core
             PlayerData.OnFuelChanged += HandleFuelChanged;
         }
 
-        public void HandleMoveRequest(GridPosition direction)
+        public void HandleMoveRequest(GridPosition direction, bool bypassFuelCheck = false)
         {
-            if (IsGameOver) return;
+            if (IsGameOver && !bypassFuelCheck) return;
 
-            MovementSystem.RequestMove(direction);
+            MovementSystem.RequestMove(direction, bypassFuelCheck);
         }
 
         public bool CanPlayerMove(GridPosition direction)
@@ -73,14 +74,29 @@ namespace pixel_miner.Core
 
         public void RestartGame()
         {
+            var currentPosition = PlayerData.GridPosition;
+            var startPosition = new GridPosition(0, 0);
+
+            if (!currentPosition.Equals(startPosition))
+            {
+                var path = Pathfinder.CalculatePath(currentPosition, startPosition);
+
+                foreach (var gridPosition in path)
+                {
+                    var direction = gridPosition - PlayerData.GridPosition;
+                    HandleMoveRequest(direction, bypassFuelCheck: true);
+                }
+            }
+
             // Reset player data
-            PlayerData.SetPosition(new GridPosition(0, 0));
             PlayerData.SetMaxFuel(PlayerData.MaxFuel);
             PlayerData.AddFuel(PlayerData.MaxFuel);
 
             // Reset game state
             IsGameOver = false;
             GameOverReason = null;
+
+            Console.WriteLine("Game state restart - fuel restored, ready to play!");
         }
 
         private void HandlePlayerMoved(GridPosition from, GridPosition to)
