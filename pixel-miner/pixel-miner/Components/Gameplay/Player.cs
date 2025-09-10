@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using pixel_miner.Components.Movement;
 using pixel_miner.Core;
+using pixel_miner.Core.Enums;
 using pixel_miner.World;
 
 namespace pixel_miner.Components.Gameplay
@@ -18,6 +15,8 @@ namespace pixel_miner.Components.Gameplay
             gameSession = session;
             gameSession.OnPlayerMoved += OnPlayerMoved;
             gameSession.OnClearMoveQueue += OnClearMoveQueue;
+
+            RenderLayer = RenderLayer.World;
         }
 
         public override void Start()

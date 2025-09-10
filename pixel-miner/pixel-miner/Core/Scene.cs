@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using pixel_miner.Core.Enums;
 using SFML.Graphics;
 
 namespace pixel_miner.Core
@@ -74,9 +71,36 @@ namespace pixel_miner.Core
         {
             if (!Active) return;
 
+            var mainCamera = CameraManager.GetMainCamera();
+            if (mainCamera != null)
+            {
+                window.SetView(mainCamera.GetView());
+                RenderOnLayer(window, RenderLayer.World);
+            }
+
+            var hudCamera = CameraManager.GetCamera("HUD");
+            if (hudCamera != null)
+            {
+                window.SetView(hudCamera.GetView());
+                RenderOnLayer(window, RenderLayer.UI);
+            }
+        }
+
+        private void RenderOnLayer(RenderWindow window, RenderLayer layer)
+        {
             foreach (var gameObject in gameObjects)
             {
-                gameObject.Render(window);
+                if (gameObject.Active)
+                {
+                    var componentsToRender = gameObject.GetComponents<Component>()
+                    .Where(c => c.Enabled && c.RenderLayer == layer)
+                    .ToList();
+
+                    foreach (var component in componentsToRender)
+                    {
+                        component.Render(window);
+                    }
+                }
             }
         }
 

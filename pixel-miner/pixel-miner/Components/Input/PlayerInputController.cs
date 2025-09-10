@@ -1,4 +1,5 @@
 using pixel_miner.Core;
+using pixel_miner.Core.Enums;
 using pixel_miner.World;
 using SFML.Window;
 
@@ -26,6 +27,7 @@ namespace pixel_miner.Components.Input
 
         public void Initialize(GameSession session)
         {
+            RenderLayer = RenderLayer.World;
             gameSession = session;
         }
 

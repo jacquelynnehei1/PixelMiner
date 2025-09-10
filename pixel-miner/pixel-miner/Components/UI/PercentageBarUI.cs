@@ -1,8 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using pixel_miner.Core;
+using pixel_miner.Core.Enums;
 using SFML.Graphics;
 using SFML.System;
 
@@ -30,6 +27,7 @@ namespace pixel_miner.Components.UI
 
         public PercentageBarUI()
         {
+            RenderLayer = RenderLayer.UI;
             InitializeVisualElements();
         }
 

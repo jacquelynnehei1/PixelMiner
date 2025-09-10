@@ -1,4 +1,5 @@
 using pixel_miner.Core;
+using pixel_miner.Core.Enums;
 using pixel_miner.Utils.Extensions;
 using SFML.Graphics;
 using SFML.System;
@@ -9,6 +10,11 @@ namespace pixel_miner.Components.Rendering
     {
         public GameObject? Target { get; set; }
         public float FollowSpeed { get; set; } = 5f;
+
+        public override void Start()
+        {
+            RenderLayer = RenderLayer.World;
+        }
 
         public override void Update(float deltaTime)
         {

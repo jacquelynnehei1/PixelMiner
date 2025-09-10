@@ -1,4 +1,5 @@
 using pixel_miner.Core;
+using pixel_miner.Core.Enums;
 using SFML.Graphics;
 using SFML.System;
 
@@ -27,6 +28,7 @@ namespace pixel_miner.Components.Rendering
 
         public override void Start()
         {
+            RenderLayer = RenderLayer.World;
             UpdateShape();
         }
 

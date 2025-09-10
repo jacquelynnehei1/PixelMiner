@@ -1,4 +1,5 @@
 using pixel_miner.Core;
+using pixel_miner.Core.Enums;
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
@@ -23,6 +24,11 @@ namespace pixel_miner.Components.Rendering
         {
             Name = cameraName;
             ViewSize = viewSize;
+        }
+
+        public override void Start()
+        {
+            RenderLayer = RenderLayer.World;
         }
 
         public void SetWindow(RenderWindow renderWindow)
