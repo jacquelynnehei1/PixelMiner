@@ -51,9 +51,10 @@ namespace pixel_miner.Scenes.Factories
                 size: new Vector2f(200f, 20f),
                 backgroundColor: new Color(255, 255, 255),
                 fillColor: new Color(237, 161, 47),
-                textColor: Color.White
+                textColor: Color.Black
             );
 
+            percentageBarUI.SetFont("Assets/Fonts/Default.otf");
             percentageBarUI.SetPercentage(0.75f);
             percentageBarUI.SetLabel("Fuel");
 

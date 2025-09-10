@@ -1,5 +1,6 @@
 using pixel_miner.Core;
 using pixel_miner.Core.Enums;
+using pixel_miner.Utils.Extensions;
 using SFML.Graphics;
 using SFML.System;
 
@@ -17,10 +18,10 @@ namespace pixel_miner.Components.UI
         public Vector2f Size { get; set; } = new Vector2f(200f, 20f);
         public Color BackgroundColor { get; set; } = new Color(255, 255, 255);
         public Color FillColor { get; set; } = new Color(237, 161, 47);
-        public Color TextColor { get; set; } = Color.White;
+        public Color TextColor { get; set; } = Color.Black;
         public bool ShowText { get; set; } = true;
         public string Label { get; set; } = "";
-        private Font? font;
+        public string FontPath { get; set; }
 
         // State
         private float currentPercentage = 1.0f;
@@ -41,7 +42,7 @@ namespace pixel_miner.Components.UI
             window.Draw(backgroundBar);
             window.Draw(fillBar);
 
-            if (ShowText && font != null)
+            if (ShowText && !FontPath.IsNullOrEmpty())
             {
                 window.Draw(labelText);
             }
@@ -71,10 +72,10 @@ namespace pixel_miner.Components.UI
         /// Sets the font for text rendering
         /// </summary>
         /// <param name="gameFont"></param>
-        public void SetFont(Font gameFont)
+        public void SetFont(string fontPath)
         {
-            font = gameFont;
-            labelText.Font = gameFont;
+            FontPath = fontPath;
+            labelText.Font = FontManager.LoadFont(fontPath);
         }
 
         /// <summary>
@@ -85,9 +86,6 @@ namespace pixel_miner.Components.UI
         {
             Label = label;
             labelText.DisplayedString = label;
-
-            Console.WriteLine($"Setting Label Text: {labelText.DisplayedString}");
-            Console.WriteLine($"Label Position: {labelText.Position}");
         }
 
         /// <summary>
@@ -119,8 +117,12 @@ namespace pixel_miner.Components.UI
             labelText.DisplayedString = "Test";
             labelText.CharacterSize = 14;
             labelText.FillColor = Color.White;
-            labelText.Font = FontManager.GetDefaultFont();
             labelText.Position = Position;
+
+            if (!FontPath.IsNullOrEmpty())
+            {
+                labelText.Font = FontManager.LoadFont(FontPath);
+            }
         }
 
         private void UpdateVisualElements()
@@ -131,8 +133,13 @@ namespace pixel_miner.Components.UI
 
             UpdateFillBar();
 
-            labelText.Position = new Vector2f(Position.X, Position.Y + Size.Y + 5f);
+            var labelPosition = Position;
+            labelPosition.X += (labelText.GetLocalBounds().Width / 2) + 5f;
+            labelPosition.Y += (Size.Y / 2) - 2.5f;
+
             labelText.DisplayedString = Label;
+            labelText.Origin = new Vector2f(labelText.GetLocalBounds().Width / 2, labelText.GetLocalBounds().Height / 2);
+            labelText.Position = labelPosition;
         }
 
         private void UpdateFillBar()

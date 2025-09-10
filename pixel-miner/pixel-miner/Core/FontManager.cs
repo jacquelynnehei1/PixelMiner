@@ -5,9 +5,9 @@ namespace pixel_miner.Core
     public static class FontManager
     {
         private static Dictionary<string, Font> loadedFonts = new Dictionary<string, Font>();
-        private static Font? defaultFont = null;
+        private static string defaultFont = "";
 
-        public static Font? GetDefaultFont()
+        public static string GetDefaultFont()
         {
             return defaultFont;
         }
@@ -18,7 +18,7 @@ namespace pixel_miner.Core
             {
                 if (makeDefault)
                 {
-                    defaultFont = loadedFonts[fontPath];
+                    defaultFont = fontPath;
                 }
 
                 return loadedFonts[fontPath];
@@ -31,7 +31,7 @@ namespace pixel_miner.Core
 
                 if (makeDefault)
                 {
-                    defaultFont = font;
+                    defaultFont = fontPath;
                 }
 
                 return font;
@@ -51,8 +51,7 @@ namespace pixel_miner.Core
             }
 
             loadedFonts.Clear();
-            defaultFont?.Dispose();
-            defaultFont = null;
+            defaultFont = "";
         }
     }
 }
