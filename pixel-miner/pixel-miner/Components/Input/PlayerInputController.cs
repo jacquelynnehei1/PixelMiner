@@ -39,7 +39,9 @@ namespace pixel_miner.Components.Input
 
         private void CheckMovementInput()
         {
-            if (gameSession == null || gameSession.IsGameOver) return;
+            if (gameSession == null) return;
+
+            if (GameManager.Instance.IsGameOver) return;
 
             for (int i = 0; i < keyMappings.Length; i++)
             {
@@ -57,8 +59,8 @@ namespace pixel_miner.Components.Input
         private void CheckRestartInput()
         {
             if (gameSession == null) return;
-
-            if (gameSession.IsGameOver)
+            
+            if (GameManager.Instance.IsGameOver)
             {
                 bool restartCurrently = Keyboard.IsKeyPressed(Keyboard.Key.R);
 
