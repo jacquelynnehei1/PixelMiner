@@ -47,7 +47,7 @@ namespace pixel_miner.Scenes.Factories
             var percentageBarUI = percentageBar.AddComponent<PercentageBarUI>();
 
             percentageBarUI.Configure(
-                position: cameraComponent != null ? cameraComponent.ScreenToWorld(new Vector2f(20f, 20f)) : new Vector2f(20f, 20f),
+                position: new Vector2f(20f, 20f),
                 size: new Vector2f(200f, 20f),
                 backgroundColor: new Color(255, 255, 255),
                 fillColor: new Color(237, 161, 47),
@@ -55,6 +55,7 @@ namespace pixel_miner.Scenes.Factories
             );
 
             percentageBarUI.SetPercentage(0.75f);
+            percentageBarUI.SetLabel("Fuel");
 
             scene.AddGameObject(percentageBar);
 

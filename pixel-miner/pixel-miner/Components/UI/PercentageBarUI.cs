@@ -85,6 +85,9 @@ namespace pixel_miner.Components.UI
         {
             Label = label;
             labelText.DisplayedString = label;
+
+            Console.WriteLine($"Setting Label Text: {labelText.DisplayedString}");
+            Console.WriteLine($"Label Position: {labelText.Position}");
         }
 
         /// <summary>
@@ -113,8 +116,11 @@ namespace pixel_miner.Components.UI
             fillBar = new RectangleShape();
 
             labelText = new Text();
+            labelText.DisplayedString = "Test";
             labelText.CharacterSize = 14;
             labelText.FillColor = Color.White;
+            labelText.Font = FontManager.GetDefaultFont();
+            labelText.Position = Position;
         }
 
         private void UpdateVisualElements()

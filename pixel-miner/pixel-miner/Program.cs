@@ -29,6 +29,8 @@ namespace pixel_miner
 
             var lastLogTime = 0f;
 
+            FontManager.LoadFont("Assets/Fonts/Default.otf", makeDefault: true);
+
             while (window.IsOpen)
             {
                 Time.Update();
