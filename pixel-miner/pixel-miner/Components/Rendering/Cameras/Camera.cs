@@ -11,6 +11,7 @@ namespace pixel_miner.Components.Rendering.Cameras
         public string Name { get; set; } = "";
         public Vector2f Bounds { get; set; } = new Vector2f(float.MaxValue, float.MaxValue);
         public Vector2f ViewSize { get; set; } = new Vector2f(0f, 0f);
+        public FloatRect Viewport { get; set; } = new FloatRect(0f, 0f, 1f, 1f);
 
         private RenderWindow? window;
 
@@ -30,6 +31,29 @@ namespace pixel_miner.Components.Rendering.Cameras
         public void SetViewSize(Vector2f size)
         {
             ViewSize = size;
+        }
+
+        public void SetViewport(float left, float right, float width, float height)
+        {
+            Viewport = new FloatRect(left, right, width, height);
+        }
+
+        public virtual View GetView()
+        {
+            if (Transform == null) return new View();
+
+            var view = new View(Transform.Position, ViewSize);
+            view.Zoom(1f / Transform.Scale.X);
+            view.Rotation = Transform.Rotation;
+
+            view.Viewport = Viewport;
+
+            return view;
+        }
+
+        public void SetName(string cameraName)
+        {
+            Name = cameraName;
         }
 
         public Vector2f WorldToScreen(Vector2f worldPos)
@@ -93,22 +117,6 @@ namespace pixel_miner.Components.Rendering.Cameras
             Vector2i mousePos = Mouse.GetPosition(window);
             Vector2f screenPos = new Vector2f(mousePos.X, mousePos.Y);
             return ScreenToWorld(screenPos);
-        }
-
-        public virtual View GetView()
-        {
-            if (Transform == null) return new View();
-
-            var view = new View(Transform.Position, ViewSize);
-            view.Zoom(1f / Transform.Scale.X);
-            view.Rotation = Transform.Rotation;
-
-            return view;
-        }
-
-        public void SetName(string cameraName)
-        {
-            Name = cameraName;
         }
     }
 }

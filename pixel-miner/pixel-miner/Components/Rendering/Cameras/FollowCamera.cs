@@ -11,6 +11,9 @@ namespace pixel_miner.Components.Rendering.Cameras
         public GameObject? Target { get; set; }
         public float FollowSpeed { get; set; } = 5f;
 
+        public bool FollowX { get; set; } = true;
+        public bool FollowY { get; set; } = true;
+
         public override void Start()
         {
             RenderLayer = RenderLayer.World;
@@ -27,12 +30,22 @@ namespace pixel_miner.Components.Rendering.Cameras
 
                 Vector2f newPos = currentPos.Lerp(targetPos, FollowSpeed * deltaTime);
 
-                if (Bounds.X != float.MaxValue)
+                if (!FollowX)
                 {
-                    newPos.X = Math.Max(-Bounds.X / 2f, Math.Min(Bounds.X / 2f, newPos.X));
+                    newPos.X = currentPos.X;
                 }
 
-                if (Bounds.Y != float.MaxValue)
+                if (!FollowY)
+                {
+                    newPos.Y = currentPos.Y;
+                }
+
+                if (Bounds.X != float.MaxValue && FollowX)
+                    {
+                        newPos.X = Math.Max(-Bounds.X / 2f, Math.Min(Bounds.X / 2f, newPos.X));
+                    }
+
+                if (Bounds.Y != float.MaxValue && FollowY)
                 {
                     newPos.Y = Math.Max(-Bounds.Y / 2f, Math.Min(Bounds.Y / 2f, newPos.Y));
                 }

@@ -80,7 +80,14 @@ namespace pixel_miner.Scenes.Factories
             }
 
             playerCamera.SetName(cameraObject.Name);
-            playerCamera.SetViewSize(new Vector2f(window.Size.X, window.Size.Y));
+            playerCamera.SetViewport(0.25f, 0f, 0.5f, 1f);
+            playerCamera.SetViewSize(new Vector2f(
+                window.Size.X * playerCamera.Viewport.Width,
+                window.Size.Y * playerCamera.Viewport.Height)
+            );
+            
+            playerCamera.FollowX = false;
+
             playerCamera.FollowSpeed = 5f;
 
             var background = cameraObject.AddComponent<SpriteRenderer>();
