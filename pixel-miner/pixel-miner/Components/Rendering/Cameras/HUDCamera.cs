@@ -2,15 +2,10 @@ using pixel_miner.Core.Enums;
 using SFML.Graphics;
 using SFML.System;
 
-namespace pixel_miner.Components.Rendering
+namespace pixel_miner.Components.Rendering.Cameras
 {
     public class HUDCamera : Camera
     {
-        public HUDCamera()
-        {
-            Name = "HUD";
-        }
-
         public override void Start()
         {
             RenderLayer = RenderLayer.World;

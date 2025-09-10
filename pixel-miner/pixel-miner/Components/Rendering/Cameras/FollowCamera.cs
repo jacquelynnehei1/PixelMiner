@@ -4,7 +4,7 @@ using pixel_miner.Utils.Extensions;
 using SFML.Graphics;
 using SFML.System;
 
-namespace pixel_miner.Components.Rendering
+namespace pixel_miner.Components.Rendering.Cameras
 {
     public class FollowCamera : Camera
     {

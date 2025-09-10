@@ -4,27 +4,17 @@ using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
 
-namespace pixel_miner.Components.Rendering
+namespace pixel_miner.Components.Rendering.Cameras
 {
     public class Camera : Component
     {
-        public string Name { get; set; }
+        public string Name { get; set; } = "";
         public Vector2f Bounds { get; set; } = new Vector2f(float.MaxValue, float.MaxValue);
-        public Vector2f ViewSize { get; set; }
+        public Vector2f ViewSize { get; set; } = new Vector2f(0f, 0f);
 
         private RenderWindow? window;
 
-        public Camera()
-        {
-            Name = "Camera";
-            ViewSize = new Vector2f(1024f, 768f);
-        }
-
-        public Camera(string cameraName, Vector2f viewSize)
-        {
-            Name = cameraName;
-            ViewSize = viewSize;
-        }
+        public Camera() { }
 
         public override void Start()
         {
@@ -35,6 +25,11 @@ namespace pixel_miner.Components.Rendering
         {
             window = renderWindow;
             ViewSize = new Vector2f(window.Size.X, window.Size.Y);
+        }
+
+        public void SetViewSize(Vector2f size)
+        {
+            ViewSize = size;
         }
 
         public Vector2f WorldToScreen(Vector2f worldPos)

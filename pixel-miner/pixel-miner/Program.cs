@@ -9,7 +9,8 @@ namespace pixel_miner
     {
         static void Main(string[] args)
         {
-            var window = new RenderWindow(new VideoMode(1024, 768), "Pixel Miner");
+            var desktopMode = VideoMode.DesktopMode;
+            var window = new RenderWindow(desktopMode, "Pixel Miner");
             window.SetFramerateLimit(60);
             
             window.Closed += (sender, e) => window.Close();
@@ -17,15 +18,11 @@ namespace pixel_miner
 
             // Create game scene using factory
             var gameSceneFactory = new GameSceneFactory();
-            var gameScene = gameSceneFactory.CreateScene();
+            var gameScene = gameSceneFactory.CreateScene(window);
             
             // Set up scene manager
             SceneManager.AddScene(gameScene);
             SceneManager.LoadScene(gameSceneFactory.SceneName);
-            
-            // Initialize camera
-            var camera = CameraManager.GetMainCamera();
-            camera?.SetWindow(window);
 
             var lastLogTime = 0f;
 
@@ -43,7 +40,7 @@ namespace pixel_miner
 
                 SceneManager.Update(Time.DeltaTime);
 
-                window.Clear(new Color(64, 128, 255));
+                window.Clear(Color.Black);
 
                 CameraManager.ApplyCameraToWindow(window);
                 SceneManager.Render(window);

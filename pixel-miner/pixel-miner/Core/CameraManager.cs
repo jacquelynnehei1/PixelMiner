@@ -1,4 +1,4 @@
-using pixel_miner.Components.Rendering;
+using pixel_miner.Components.Rendering.Cameras;
 using pixel_miner.Utils.Extensions;
 using SFML.Graphics;
 
@@ -39,17 +39,21 @@ namespace pixel_miner.Core
 
         public static void ApplyCameraToWindow(RenderWindow window, string cameraName = "")
         {
+            Camera? camera = null;
+
             if (!cameraName.IsNullOrEmpty() && cameras.ContainsKey(cameraName))
             {
-                Camera camera = cameras[cameraName];
-                window.SetView(camera.GetView());
-                return;
+                camera = cameras[cameraName];
+            }
+            else if (mainCamera != null)
+            {
+                camera = mainCamera;
             }
 
-            if (mainCamera != null)
+            if (camera != null)
             {
-                window.SetView(mainCamera.GetView());
-                return;
+                var view = camera.GetView();
+                window.SetView(view);
             }
         }
 

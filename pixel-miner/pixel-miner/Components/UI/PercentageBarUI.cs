@@ -21,7 +21,7 @@ namespace pixel_miner.Components.UI
         public Color TextColor { get; set; } = Color.Black;
         public bool ShowText { get; set; } = true;
         public string Label { get; set; } = "";
-        public string FontPath { get; set; }
+        public string FontPath { get; set; } = "";
 
         // State
         private float currentPercentage = 1.0f;

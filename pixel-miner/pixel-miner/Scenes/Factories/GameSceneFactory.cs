@@ -2,8 +2,10 @@ using pixel_miner.Components.Gameplay;
 using pixel_miner.Components.Input;
 using pixel_miner.Components.Movement;
 using pixel_miner.Components.Rendering;
+using pixel_miner.Components.Rendering.Cameras;
 using pixel_miner.Components.UI;
 using pixel_miner.Core;
+using pixel_miner.Core.Enums;
 using SFML.System;
 using SFML.Graphics;
 
@@ -13,7 +15,7 @@ namespace pixel_miner.Scenes.Factories
     {
         public override string SceneName => "GameScene";
 
-        public override Scene CreateScene()
+        public override Scene CreateScene(RenderWindow window)
         {
             var scene = new Scene(SceneName);
 
@@ -25,12 +27,11 @@ namespace pixel_miner.Scenes.Factories
             };
 
             var player = CreatePlayer(ref gameSession);
-            scene.AddGameObject(player);
 
             // Create camera that follows player
-            var camera = CreatePlayerCamera(player);
-            var cameraComponent = camera.GetComponent<Camera>();
+            var camera = CreatePlayerCamera(window, player);
             scene.AddGameObject(camera);
+            scene.AddGameObject(player);
 
             // Add some test reference objects
             var ref1 = CreateTestObject("Ref1", 200, 200, Color.Green);
@@ -42,23 +43,7 @@ namespace pixel_miner.Scenes.Factories
             var hud = CreateHUDCamera();
             scene.AddGameObject(hud);
 
-            // Add a percentage bar to the UI
-            var percentageBar = new GameObject("TestPercentageBar");
-            var percentageBarUI = percentageBar.AddComponent<PercentageBarUI>();
 
-            percentageBarUI.Configure(
-                position: new Vector2f(20f, 20f),
-                size: new Vector2f(200f, 20f),
-                backgroundColor: new Color(255, 255, 255),
-                fillColor: new Color(237, 161, 47),
-                textColor: Color.Black
-            );
-
-            percentageBarUI.SetFont("Assets/Fonts/Default.otf");
-            percentageBarUI.SetPercentage(0.75f);
-            percentageBarUI.SetLabel("Fuel");
-
-            scene.AddGameObject(percentageBar);
 
             return scene;
         }
@@ -75,7 +60,7 @@ namespace pixel_miner.Scenes.Factories
             var inputController = player.AddComponent<PlayerInputController>();
 
             var playerSpriteRenderer = player.AddComponent<SpriteRenderer>();
-            playerSpriteRenderer.SetColor(SFML.Graphics.Color.Red);
+            playerSpriteRenderer.SetColor(Color.Red);
             playerSpriteRenderer.SetSize(new Vector2f(32, 32));
 
             playerComponent.Initialize(session);
@@ -84,10 +69,10 @@ namespace pixel_miner.Scenes.Factories
             return player;
         }
 
-        private GameObject CreatePlayerCamera(GameObject? player = null)
+        private GameObject CreatePlayerCamera(RenderWindow window, GameObject? player = null)
         {
             var cameraObject = new GameObject("PlayerCamera", 0, 0);
-            var playerCamera = cameraObject.AddComponent<FollowCamera>();
+            var playerCamera = cameraObject.AddComponent<MainGameCamera>();
 
             if (player != null)
             {
@@ -95,7 +80,14 @@ namespace pixel_miner.Scenes.Factories
             }
 
             playerCamera.SetName(cameraObject.Name);
+            playerCamera.SetViewSize(new Vector2f(window.Size.X, window.Size.Y));
             playerCamera.FollowSpeed = 5f;
+
+            var background = cameraObject.AddComponent<SpriteRenderer>();
+            background.RenderLayer = RenderLayer.World;
+            background.SetColor(new Color(20, 30, 50));
+            background.SetSize(new Vector2f(window.Size.X, window.Size.Y));
+
             CameraManager.AddCamera(playerCamera, isMainCamera: true);
 
             return cameraObject;
@@ -105,6 +97,7 @@ namespace pixel_miner.Scenes.Factories
         {
             var gameObject = new GameObject("HUD", 0, 0);
             var hudCamera = gameObject.AddComponent<HUDCamera>();
+            hudCamera.SetName(gameObject.Name);
 
             CameraManager.AddCamera(hudCamera);
 
