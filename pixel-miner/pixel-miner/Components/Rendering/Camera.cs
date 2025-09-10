@@ -94,7 +94,7 @@ namespace pixel_miner.Components.Rendering
             return ScreenToWorld(screenPos);
         }
 
-        public View GetView()
+        public virtual View GetView()
         {
             if (Transform == null) return new View();
 

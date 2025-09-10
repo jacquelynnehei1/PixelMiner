@@ -1,5 +1,6 @@
 using pixel_miner.Core;
 using pixel_miner.Utils.Extensions;
+using SFML.Graphics;
 using SFML.System;
 
 namespace pixel_miner.Components.Rendering
@@ -37,6 +38,11 @@ namespace pixel_miner.Components.Rendering
         public void SetTarget(GameObject target)
         {
             Target = target;
+        }
+
+        public override void Render(RenderWindow window)
+        {
+            CameraManager.ApplyCameraToWindow(window, Name);
         }
     }
 }
