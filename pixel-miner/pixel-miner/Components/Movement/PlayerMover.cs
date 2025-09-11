@@ -15,8 +15,6 @@ namespace pixel_miner.Components.Movement
         {
             RenderLayer = Core.Enums.RenderLayer.World;
             MoveSpeed = 200f;
-
-            GameManager.Instance.OnGameRestart += ClearMoveQueue;
         }
 
         public void QueueMove(Vector2f target)

@@ -48,7 +48,7 @@ namespace pixel_miner.Components.Gameplay
             movementSystem.OnOutOfFuel += HandleOutOfFuel;
             movementSystem.OnMoveBlocked += HandleMoveBlocked;
 
-            GameManager.Instance.OnGameRestart += ResetFuel;
+            GameManager.Instance.OnGameRestart += ResetPlayer;
         }
 
         public bool TryConsumeFuel(int amount)
@@ -104,8 +104,15 @@ namespace pixel_miner.Components.Gameplay
             return CurrentFuel >= amount;
         }
 
-        private void ResetFuel()
+        private void ResetPlayer()
         {
+            if (mover != null)
+            {
+                mover.ClearMoveQueue();
+            }
+
+            movementSystem.ResetMovement();
+
             CurrentFuel = MaxFuel;
         }
 

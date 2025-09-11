@@ -18,8 +18,6 @@ namespace pixel_miner.Components.Movement
         {
             board = gameBoard;
             playerData = player;
-
-            GameManager.Instance.OnGameRestart += ResetMovement;
         }
 
         public void RequestMove(GridPosition direction, bool bypassFuelCheck = false)
@@ -65,7 +63,7 @@ namespace pixel_miner.Components.Movement
             return playerData.CurrentFuel;
         }
 
-        private void ResetMovement()
+        public void ResetMovement()
         {
             var currentPosition = playerData.GridPosition;
             var startPosition = new GridPosition(0, 0);
