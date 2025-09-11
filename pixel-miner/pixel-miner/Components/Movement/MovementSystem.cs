@@ -1,5 +1,6 @@
 using pixel_miner.Components.Gameplay;
 using pixel_miner.Core;
+using pixel_miner.Utils;
 using pixel_miner.World;
 
 namespace pixel_miner.Components.Movement
@@ -17,6 +18,8 @@ namespace pixel_miner.Components.Movement
         {
             board = gameBoard;
             playerData = player;
+
+            GameManager.Instance.OnGameRestart += ResetMovement;
         }
 
         public void RequestMove(GridPosition direction, bool bypassFuelCheck = false)
@@ -60,6 +63,33 @@ namespace pixel_miner.Components.Movement
         public int GetPlayerFuel()
         {
             return playerData.CurrentFuel;
+        }
+
+        private void ResetMovement()
+        {
+            var currentPosition = playerData.GridPosition;
+            var startPosition = new GridPosition(0, 0);
+
+            Console.WriteLine($"Restarting from {currentPosition} to {startPosition}");
+
+            if (!currentPosition.Equals(startPosition))
+            {
+                var path = Pathfinder.CalculatePath(currentPosition, startPosition);
+                Console.WriteLine("Raw path from pathfinder: ");
+                foreach (var step in path)
+                {
+                    Console.WriteLine($"Step: {step}");
+                }
+
+                var currentStep = currentPosition;
+                foreach (var nextStep in path)
+                {
+                    var direction = nextStep - currentStep;
+                    Console.WriteLine($"Moving from {currentStep} to {nextStep}, direction: {direction}");
+                    RequestMove(direction, bypassFuelCheck: true);
+                    currentStep = nextStep;
+                }        
+            }
         }
     }
 }

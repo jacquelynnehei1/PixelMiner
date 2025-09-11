@@ -2,19 +2,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using pixel_miner.Core;
 using SFML.System;
 
 namespace pixel_miner.World
 {
-    public class Board
+    public class Board : Component
     {
         public int TileSize { get; set; } = 32;
 
-        private Dictionary<GridPosition, Tile> tiles;
+        private Dictionary<GridPosition, Tile> tiles = new Dictionary<GridPosition, Tile>();
 
-        public Board()
+        public Board(){}
+
+        public override void Start()
         {
-            tiles = new Dictionary<GridPosition, Tile>();
             InitializeGrid();
         }
 

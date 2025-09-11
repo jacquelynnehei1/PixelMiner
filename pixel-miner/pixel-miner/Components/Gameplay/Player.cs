@@ -15,39 +15,38 @@ namespace pixel_miner.Components.Gameplay
         public event Action<int>? OnFuelChanged;
         public event Action<GridPosition>? OnPositionChanged;
 
-        private GameSession? gameSession;
         private PlayerMover? mover;
-        private MovementSystem movementSystem;
+        private MovementSystem movementSystem = null!;
+        private Board? board = null!;
 
         public override void Start()
         {
-            if (gameSession == null || Transform == null) return;
+            if (Transform == null || board == null) return;
 
-            var initialWorldPosition = gameSession.Board.GridToWorldPosition(GridPosition);
+            var initialWorldPosition = board.GridToWorldPosition(GridPosition);
             Transform.Position = initialWorldPosition;
 
             mover = GameObject.GetComponent<PlayerMover>();
 
             if (mover == null) return;
 
-            mover.SetBoard(gameSession.Board);
-
-            movementSystem = GameObject.GetComponent<MovementSystem>()!;
+            mover.SetBoard(board);
         }
 
-        public void Initialize(GameSession session, int maxFuel, GridPosition gridPosition)
+        public void Initialize(Board gameBoard, int maxFuel, GridPosition gridPosition)
         {
-            gameSession = session;
-            movementSystem.OnPlayerMoved += OnPlayerMoved;
-            movementSystem.OnOutOfFuel += HandleOutOfFuel;
-            movementSystem.OnMoveBlocked += HandleMoveBlocked;
-            gameSession.OnClearMoveQueue += OnClearMoveQueue;
+            board = gameBoard;
+            movementSystem = GameObject.GetComponent<MovementSystem>()!;
 
             RenderLayer = RenderLayer.World;
 
             MaxFuel = maxFuel;
             GridPosition = gridPosition;
             CurrentFuel = maxFuel;
+
+            movementSystem.OnPlayerMoved += OnPlayerMoved;
+            movementSystem.OnOutOfFuel += HandleOutOfFuel;
+            movementSystem.OnMoveBlocked += HandleMoveBlocked;
 
             GameManager.Instance.OnGameRestart += ResetFuel;
         }
@@ -121,20 +120,11 @@ namespace pixel_miner.Components.Gameplay
 
         private void OnPlayerMoved(GridPosition from, GridPosition to)
         {
-            if (gameSession == null) return;
-
-            if (gameSession.Board != null && mover != null)
+            if (board != null && mover != null)
             {
-                var worldPosition = gameSession.Board.GridToWorldPosition(to);
+                var worldPosition = board.GridToWorldPosition(to);
                 mover.QueueMove(worldPosition);
             }
-        }
-
-        private void OnClearMoveQueue()
-        {
-            if (mover == null) return;
-
-            mover.ClearMoveQueue();
         }
 
         public override void Destroy()

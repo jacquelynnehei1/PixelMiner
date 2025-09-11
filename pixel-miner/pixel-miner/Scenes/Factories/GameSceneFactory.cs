@@ -19,20 +19,21 @@ namespace pixel_miner.Scenes.Factories
         {
             var scene = new Scene(SceneName);
 
+            var boardObject = new GameObject("Board");
+            var board = boardObject.AddComponent<Board>();
+
             var player = CreatePlayer();
             var playerComponent = player.GetComponent<Player>()!;
             var movementSystem = player.GetComponent<MovementSystem>()!;
 
-            var gameSession = new GameSession(playerComponent);
-
-            var initialPosition = gameSession.Board.GridToWorldPosition(playerComponent.GridPosition);
+            var initialPosition = board.GridToWorldPosition(playerComponent.GridPosition);
             player.Transform.Position = initialPosition;
 
             var inputController = player.GetComponent<PlayerInputController>()!;
 
-            playerComponent.Initialize(gameSession, maxFuel: 100, new GridPosition(0, 0));
+            playerComponent.Initialize(board, maxFuel: 100, new GridPosition(0, 0));
             inputController.Initialize(playerComponent);
-            movementSystem.Initialize(gameSession.Board, playerComponent);
+            movementSystem.Initialize(board, playerComponent);
 
             GameManager.Instance.OnGameOver += (reason) =>
             {
