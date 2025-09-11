@@ -15,6 +15,11 @@ namespace pixel_miner.World
 
         public Board(){}
 
+        public override void Start()
+        {
+            InitializeGrid();
+        }
+
         public MoveResult ValidateMove(GridPosition from, GridPosition direction)
         {
             GridPosition target = from + direction;

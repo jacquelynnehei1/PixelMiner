@@ -7,7 +7,6 @@ namespace pixel_miner.Components.Movement
 {
     public class PlayerMover : Mover
     {
-        private Board? board;
         private Queue<Vector2f> moveQueue = new Queue<Vector2f>();
         private Vector2f targetPosition;
 
@@ -77,11 +76,6 @@ namespace pixel_miner.Components.Movement
             var nextMove = moveQueue.Dequeue();
 
             MoveTo(nextMove);
-        }
-
-        public void SetBoard(Board gameBoard)
-        {
-            board = gameBoard;
         }
 
         public void ClearMoveQueue()

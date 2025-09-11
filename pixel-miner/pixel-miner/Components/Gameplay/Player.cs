@@ -27,10 +27,6 @@ namespace pixel_miner.Components.Gameplay
             Transform.Position = initialWorldPosition;
 
             mover = GameObject.GetComponent<PlayerMover>();
-
-            if (mover == null) return;
-
-            mover.SetBoard(board);
         }
 
         public void Initialize(Board gameBoard, int maxFuel, GridPosition gridPosition)
