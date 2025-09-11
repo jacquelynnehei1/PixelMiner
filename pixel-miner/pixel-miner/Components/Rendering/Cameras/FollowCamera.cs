@@ -14,11 +14,6 @@ namespace pixel_miner.Components.Rendering.Cameras
         public bool FollowX { get; set; } = true;
         public bool FollowY { get; set; } = true;
 
-        public override void Start()
-        {
-            RenderLayer = RenderLayer.World;
-        }
-
         public override void Update(float deltaTime)
         {
             if (Transform == null) return;

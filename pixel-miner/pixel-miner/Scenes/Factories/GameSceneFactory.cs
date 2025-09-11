@@ -27,6 +27,8 @@ namespace pixel_miner.Scenes.Factories
             var board = boardObject.AddComponent<Board>();
             board.InitializeGrid(25);
 
+            var spawnPosition = new GridPosition(0, board.GetTopRowIndex());
+
             var player = CreatePlayer();
             var playerComponent = player.GetComponent<Player>()!;
             var movementSystem = player.GetComponent<MovementSystem>()!;
@@ -36,7 +38,7 @@ namespace pixel_miner.Scenes.Factories
 
             var inputController = player.GetComponent<PlayerInputController>()!;
 
-            playerComponent.Initialize(board, maxFuel: 100, new GridPosition(0, 0));
+            playerComponent.Initialize(board, maxFuel: 100, spawnPosition);
             inputController.Initialize(playerComponent);
             movementSystem.Initialize(board, playerComponent);
 
@@ -62,8 +64,6 @@ namespace pixel_miner.Scenes.Factories
 
             var hud = CreateHUDCamera();
             scene.AddGameObject(hud);
-
-
 
             return scene;
         }

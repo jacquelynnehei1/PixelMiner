@@ -8,7 +8,6 @@ namespace pixel_miner.Core
         public GameObject GameObject { get; internal set; } = null!;
         public Transform Transform => GameObject?.GetComponent<Transform>()!;
         public bool Enabled { get; set; } = true;
-        public RenderLayer RenderLayer { get; set; } = RenderLayer.World;
 
         /// <summary>
         /// Called when component is added to GameObject

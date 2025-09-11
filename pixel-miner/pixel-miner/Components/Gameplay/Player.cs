@@ -34,8 +34,6 @@ namespace pixel_miner.Components.Gameplay
             board = gameBoard;
             movementSystem = GameObject.GetComponent<MovementSystem>()!;
 
-            RenderLayer = RenderLayer.World;
-
             MaxFuel = maxFuel;
             GridPosition = gridPosition;
             CurrentFuel = maxFuel;

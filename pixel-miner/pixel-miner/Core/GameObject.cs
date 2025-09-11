@@ -9,6 +9,9 @@ namespace pixel_miner.Core
         public bool Active { get; set; } = true;
         public Transform Transform { get; set; }
 
+
+        internal Scene? ParentScene { get; set; }
+
         private List<Component> components = new List<Component>();
         private bool started = false;
 
@@ -77,6 +80,48 @@ namespace pixel_miner.Core
             }
         }
 
+        public static GameObject? Find(string name)
+        {
+            var currentScene = SceneManager.GetCurrentScene();
+            return currentScene?.FindGameObject(name);
+        }
+
+        public static GameObject? FindObjectOfType<T>() where T : Component
+        {
+            var currentScene = SceneManager.GetCurrentScene();
+            return currentScene?.FindGameObjectsWithComponent<T>().FirstOrDefault();
+        }
+
+        public static List<GameObject> FindObjectsOfType<T>() where T : Component
+        {
+            var currentScene = SceneManager.GetCurrentScene();
+            return currentScene?.FindGameObjectsWithComponent<T>() ?? new List<GameObject>();
+        }
+
+        public static T? FindObjectOfType<T>(string name) where T : Component
+        {
+            var gameObject = Find(name);
+            return gameObject?.GetComponent<T>();
+        }
+
+        public static List<GameObject> FindAllObjects()
+        {
+            var currentScene = SceneManager.GetCurrentScene();
+            return currentScene?.GetAllGameObjects() ?? new List<GameObject>();
+        }
+
+        public static void Create(GameObject gameObject)
+        {
+            var currentScene = SceneManager.GetCurrentScene();
+            currentScene?.AddGameObject(gameObject);
+        }
+
+        public static void Destroy(GameObject gameObject)
+        {
+            var currentScene = SceneManager.GetCurrentScene();
+            currentScene?.RemoveGameObject(gameObject);
+        }
+
         /// <summary>
         /// Called once when GameObject is first created/added to the scene
         /// </summary>
@@ -137,6 +182,7 @@ namespace pixel_miner.Core
             }
 
             components.Clear();
+            ParentScene = null;
         }
     }
 }

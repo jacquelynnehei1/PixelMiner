@@ -17,11 +17,6 @@ namespace pixel_miner.Components.Rendering.Cameras
 
         public Camera() { }
 
-        public override void Start()
-        {
-            RenderLayer = RenderLayer.World;
-        }
-
         public void SetWindow(RenderWindow renderWindow)
         {
             window = renderWindow;

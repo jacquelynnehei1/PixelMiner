@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using pixel_miner.Core;
 using SFML.Graphics;
@@ -12,13 +13,87 @@ namespace pixel_miner.World
     {
         public float TileSize { get; set; } = 32;
 
+        // Dynamic loading configuration
+        private int loadAheadDistance = 10;
+        private int rowsToLoadAtOnce = 15;
+        private int maxLoadedRows = 100;
+
+        //Grid bounds tracking
+        private int currentTopRow;
+        private int currentBottomRow;
+        private int gridColumns;
+
+        public event Action<IEnumerable<GridPosition>>? OnTilesAdded;
+        public event Action<IEnumerable<GridPosition>>? OnTilesRemoved;
+
         private Dictionary<GridPosition, Tile> tiles = new Dictionary<GridPosition, Tile>();
 
         public Board() { }
 
         public override void Start()
         {
-            
+
+        }
+
+        public void InitializeGrid(int columns, int surfaceRows = 5, int undergroundRows = 15)
+        {
+            ClearBoard();
+            gridColumns = columns;
+
+            var mainCamera = CameraManager.GetMainCamera();
+            if (mainCamera != null)
+            {
+                var viewportWidth = mainCamera.ViewSize.X;
+                var viewportHeight = mainCamera.ViewSize.Y;
+
+                TileSize = viewportWidth / columns;
+
+                float gridStartY = -(viewportHeight / 4f);
+                currentTopRow = (int)(gridStartY / TileSize);
+                currentBottomRow = currentTopRow + surfaceRows + undergroundRows;
+
+                Console.WriteLine($"Initial grid: Top row {currentTopRow}, Bottom row {currentBottomRow}");
+            }
+
+            GenerateRowRange(currentTopRow, currentBottomRow);
+        }
+
+        private void GenerateRowRange(int startRow, int endRow)
+        {
+            for (int col = -(gridColumns / 2); col <= (gridColumns / 2); col++)
+            {
+                for (int row = startRow; row <= endRow; row++)
+                {
+                    var gridPosition = new GridPosition(col, row);
+
+                    if (!tiles.ContainsKey(gridPosition))
+                    {
+                        var tile = new Tile(gridPosition);
+                        tiles.Add(gridPosition, tile);
+                    }
+                }
+            }
+
+            Console.WriteLine($"Generated rows {startRow} to {endRow}. Total tiles: {tiles.Count}");
+        }
+
+        public void CheckAndExpandGrid(GridPosition position)
+        {
+            int distanceFromBottom = currentBottomRow - position.Y;
+
+            if (distanceFromBottom <= loadAheadDistance)
+            {
+                ExpandGrid();
+            }
+        }
+
+        private void ExpandGrid()
+        {
+            int newBottomRow = currentBottomRow + rowsToLoadAtOnce;
+            Console.WriteLine($"Expanding grid down from row {currentBottomRow} to {newBottomRow}");
+
+            GenerateRowRange(currentBottomRow, newBottomRow);
+            currentBottomRow = newBottomRow;
         }
 
         public MoveResult ValidateMove(GridPosition from, GridPosition direction)
@@ -63,41 +138,6 @@ namespace pixel_miner.World
             );
         }
 
-        public void InitializeGrid(int columns, int rows = 20)
-        {
-            ClearBoard();
-
-            var mainCamera = CameraManager.GetMainCamera();
-
-            if (mainCamera != null)
-            {
-                var viewportWidth = mainCamera.ViewSize.X;
-                TileSize = viewportWidth / columns;
-
-                Console.WriteLine($"viewport width = {viewportWidth}");
-                Console.WriteLine($"Tile Size = {TileSize}");
-            }
-
-            Console.WriteLine($"rows / 2 = {rows / 2}");
-            Console.WriteLine($"Min = {-(rows / 2)}, Max = {(rows / 2)}");
-
-            Console.WriteLine($"columns / 2 = {columns / 2}");
-            Console.WriteLine($"Min = {-(columns / 2)}, Max = {(columns / 2)}");
-
-            for (int col = -(columns / 2); col <= (columns / 2); col++)
-            {
-                for (int row = -(rows / 2); row <= (rows / 2); row++)
-                {
-                    var gridPosition = new GridPosition(col, row);
-                    var tile = new Tile(gridPosition);
-
-                    tiles.Add(gridPosition, tile);
-                }
-            }
-
-            Console.WriteLine($"Num tiles = {tiles.Count}");
-        }
-
         public IEnumerable<GridPosition> GetAllTilePositions()
         {
             return tiles.Keys;
@@ -125,6 +165,20 @@ namespace pixel_miner.World
         public void ClearBoard()
         {
             tiles.Clear();
+        }
+
+        public int GetTopRowIndex()
+        {
+            if (tiles.Count == 0) return 0;
+
+            return tiles.Keys.Min(pos => pos.Y);
+        }
+
+        public int GetBottomRowIndex()
+        {
+            if (tiles.Count == 0) return 0;
+
+            return tiles.Keys.Max(pos => pos.Y);
         }
     }
 }

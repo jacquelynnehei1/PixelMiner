@@ -1,3 +1,4 @@
+using pixel_miner.Components.Rendering;
 using pixel_miner.Core;
 using pixel_miner.Core.Enums;
 using pixel_miner.Utils.Extensions;
@@ -6,7 +7,7 @@ using SFML.System;
 
 namespace pixel_miner.Components.UI
 {
-    public class PercentageBarUI : Component
+    public class PercentageBarUI : Renderer
     {
         // Visual Elements
         private RectangleShape backgroundBar = null!;

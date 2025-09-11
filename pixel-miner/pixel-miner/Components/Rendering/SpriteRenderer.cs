@@ -5,7 +5,7 @@ using SFML.System;
 
 namespace pixel_miner.Components.Rendering
 {
-    public class SpriteRenderer : Component
+    public class SpriteRenderer : Renderer
     {
         public Color Color { get; set; } = Color.White;
         public Vector2f Size { get; set; } = new Vector2f(32f, 32f);

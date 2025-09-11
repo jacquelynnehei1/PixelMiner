@@ -1,3 +1,4 @@
+using pixel_miner.Components.Rendering;
 using pixel_miner.Core.Enums;
 using SFML.Graphics;
 
@@ -46,6 +47,7 @@ namespace pixel_miner.Core
         {
             foreach (var gameObject in gameObjects)
             {
+                gameObject.ParentScene = this;
                 gameObject.Start();
             }
         }
@@ -88,19 +90,25 @@ namespace pixel_miner.Core
 
         private void RenderOnLayer(RenderWindow window, RenderLayer layer)
         {
+            var renderersToRender = new List<Renderer>();
+
             foreach (var gameObject in gameObjects)
             {
                 if (gameObject.Active)
                 {
-                    var componentsToRender = gameObject.GetComponents<Component>()
-                    .Where(c => c.Enabled && c.RenderLayer == layer)
+                    var renderers = gameObject.GetComponents<Renderer>()
+                    .Where(r => r.Enabled && r.RenderLayer == layer)
                     .ToList();
 
-                    foreach (var component in componentsToRender)
-                    {
-                        component.Render(window);
-                    }
+                    renderersToRender.AddRange(renderers);
                 }
+            }
+
+            var sortedRenderers = renderersToRender.OrderBy(r => r.SortingOrder).ToList();
+
+            foreach (var renderer in sortedRenderers)
+            {
+                renderer.Render(window);
             }
         }
 
@@ -127,6 +135,7 @@ namespace pixel_miner.Core
             foreach (var gameObject in objectsToAdd)
             {
                 gameObjects.Add(gameObject);
+                gameObject.ParentScene = this;
                 gameObject.Start();
             }
             objectsToAdd.Clear();

@@ -44,6 +44,7 @@ namespace pixel_miner.Components.Movement
             }
 
             playerData.SetPosition(moveResult.TargetPosition);
+            board.CheckAndExpandGrid(moveResult.TargetPosition);
             OnPlayerMoved?.Invoke(oldPosition, moveResult.TargetPosition);
         }
 

@@ -28,7 +28,6 @@ namespace pixel_miner.Components.Input
 
         public void Initialize(Player player)
         {
-            RenderLayer = RenderLayer.World;
             this.player = player;
         }
 

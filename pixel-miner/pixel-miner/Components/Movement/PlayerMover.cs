@@ -12,7 +12,6 @@ namespace pixel_miner.Components.Movement
 
         public override void Start()
         {
-            RenderLayer = Core.Enums.RenderLayer.World;
             MoveSpeed = 200f;
         }
 

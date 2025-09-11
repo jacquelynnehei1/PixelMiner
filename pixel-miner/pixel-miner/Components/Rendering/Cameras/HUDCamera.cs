@@ -6,11 +6,6 @@ namespace pixel_miner.Components.Rendering.Cameras
 {
     public class HUDCamera : Camera
     {
-        public override void Start()
-        {
-            RenderLayer = RenderLayer.World;
-        }
-
         public override View GetView()
         {
             var center = new Vector2f(ViewSize.X / 2, ViewSize.Y / 2);

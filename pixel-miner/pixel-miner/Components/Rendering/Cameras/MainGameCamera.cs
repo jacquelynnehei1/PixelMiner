@@ -5,10 +5,5 @@ namespace pixel_miner.Components.Rendering.Cameras
     public class MainGameCamera : FollowCamera
     {
         public MainGameCamera() {}
-
-        public override void Start()
-        {
-            RenderLayer = RenderLayer.World;
-        }
     }
 }
