@@ -19,31 +19,28 @@ namespace pixel_miner.Components.Gameplay
         public Color DeepTileColor { get; set; } = new Color(101, 67, 33);
         public float TilePadding { get; set; } = 2f;
 
+        private bool hasCreatedInitialTiles = false;
+
         public override void Start()
         {
-            Console.WriteLine("BoardVisualizer starting...");
-
             var boardObject = GameObject.FindObjectOfType<Board>();
             if (boardObject != null)
             {
                 board = boardObject.GetComponent<Board>();
                 if (board != null)
                 {
-                    Console.WriteLine("BoardVisualizer connected to board");
-
                     board.OnTilesAdded += OnTilesAdded;
                     board.OnTilesRemoved += OnTilesRemoved;
-
-                    CreateVisualsForAllTiles();
-                }
-                else
-                {
-                    Console.WriteLine("BoardVisualizer: Found Board GameObject but no Board component!");
                 }
             }
-            else
+        }
+
+        public override void Update(float deltaTime)
+        {
+            if (!hasCreatedInitialTiles && board != null)
             {
-                Console.WriteLine("BoardVisualize: Could not find Board GameObject!");
+                CreateVisualsForAllTiles();
+                hasCreatedInitialTiles = true;
             }
         }
 
@@ -52,14 +49,10 @@ namespace pixel_miner.Components.Gameplay
             if (board == null) return;
 
             var allTilePositions = board.GetAllTilePositions().ToList();
-            Console.WriteLine($"Creating visuals for all {allTilePositions.Count} tiles");
-
             foreach (var tilePosition in allTilePositions)
             {
                 CreatTileVisual(tilePosition);
             }
-
-            Console.WriteLine($"BoardVisualizer created {tileVisuals.Count} tile visuals");
         }
 
         private void CreatTileVisual(GridPosition tilePosition)
@@ -123,7 +116,6 @@ namespace pixel_miner.Components.Gameplay
         private void OnTilesAdded(IEnumerable<GridPosition> newTilePositions)
         {
             var newTiles = newTilePositions.ToList();
-            Console.WriteLine($"BoardVisualizer: Adding visuals for {newTiles.Count} new tiles");
 
             foreach (var tilePosition in newTiles)
             {
@@ -134,7 +126,6 @@ namespace pixel_miner.Components.Gameplay
         private void OnTilesRemoved(IEnumerable<GridPosition> removedTilePositions)
         {
             var removedTiles = removedTilePositions.ToList();
-            Console.WriteLine($"BoardVisualizer: Removing visuals for {removedTiles.Count}");
 
             foreach (var tilePosition in removedTiles)
             {
@@ -157,7 +148,6 @@ namespace pixel_miner.Components.Gameplay
             }
 
             tileVisuals.Clear();
-            Console.WriteLine("BoardVisualizer destroyed and cleaned up all tile visuals");
         }
     }
 }

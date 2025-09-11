@@ -67,7 +67,7 @@ namespace pixel_miner.Components.Movement
         public void ResetMovement()
         {
             var currentPosition = playerData.GridPosition;
-            var startPosition = new GridPosition(0, 0);
+            var startPosition = playerData.RespawnPosition;
 
             Console.WriteLine($"Restarting from {currentPosition} to {startPosition}");
 

@@ -14,9 +14,8 @@ namespace pixel_miner.World
         public float TileSize { get; set; } = 32;
 
         // Dynamic loading configuration
-        private int loadAheadDistance = 10;
+        private int loadAheadDistance = 15;
         private int rowsToLoadAtOnce = 15;
-        private int maxLoadedRows = 100;
 
         //Grid bounds tracking
         private int currentTopRow;
@@ -60,6 +59,8 @@ namespace pixel_miner.World
 
         private void GenerateRowRange(int startRow, int endRow)
         {
+            var newTiles = new List<GridPosition>();
+
             for (int col = -(gridColumns / 2); col <= (gridColumns / 2); col++)
             {
                 for (int row = startRow; row <= endRow; row++)
@@ -70,11 +71,18 @@ namespace pixel_miner.World
                     {
                         var tile = new Tile(gridPosition);
                         tiles.Add(gridPosition, tile);
+                        newTiles.Add(gridPosition);
                     }
                 }
             }
 
             Console.WriteLine($"Generated rows {startRow} to {endRow}. Total tiles: {tiles.Count}");
+
+            if (newTiles.Count > 0)
+            {
+                OnTilesAdded?.Invoke(newTiles);
+            }
+
         }
 
         public void CheckAndExpandGrid(GridPosition position)

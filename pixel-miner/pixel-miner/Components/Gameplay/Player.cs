@@ -9,6 +9,7 @@ namespace pixel_miner.Components.Gameplay
     public class Player : Component
     {
         public GridPosition GridPosition { get; set; }
+        public GridPosition RespawnPosition { get; set; }
         public int CurrentFuel { get; set; }
         public int MaxFuel { get; set; }
 
@@ -25,6 +26,8 @@ namespace pixel_miner.Components.Gameplay
 
             var initialWorldPosition = board.GridToWorldPosition(GridPosition);
             Transform.Position = initialWorldPosition;
+
+            RespawnPosition = GridPosition;
 
             mover = GameObject.GetComponent<PlayerMover>();
         }

@@ -25,7 +25,15 @@ namespace pixel_miner.Scenes.Factories
 
             var boardObject = new GameObject("Board");
             var board = boardObject.AddComponent<Board>();
+
+            var boardVisualizer = boardObject.AddComponent<BoardVisualizer>();
+            boardVisualizer.DefaultTileColor = new Color(139, 119, 101);
+            boardVisualizer.SurfaceTileColor = new Color(144, 238, 144);
+            boardVisualizer.DeepTileColor = new Color(101, 67, 33);
+            boardVisualizer.TilePadding = 2f;
+
             board.InitializeGrid(25);
+            scene.AddGameObject(boardObject);
 
             var spawnPosition = new GridPosition(0, board.GetTopRowIndex());
 
@@ -35,6 +43,13 @@ namespace pixel_miner.Scenes.Factories
 
             var initialPosition = board.GridToWorldPosition(playerComponent.GridPosition);
             player.Transform.Position = initialPosition;
+
+            playerComponent.RespawnPosition = playerComponent.GridPosition;
+
+            if (mainCamera != null)
+            {
+                mainCamera.Transform.Position = player.Transform.Position;
+            }
 
             var inputController = player.GetComponent<PlayerInputController>()!;
 
@@ -109,6 +124,7 @@ namespace pixel_miner.Scenes.Factories
             background.RenderLayer = RenderLayer.World;
             background.SetColor(new Color(20, 30, 50));
             background.SetSize(new Vector2f(window.Size.X, window.Size.Y));
+            background.SortingOrder = -2;
 
             CameraManager.AddCamera(playerCamera, isMainCamera: true);
 
