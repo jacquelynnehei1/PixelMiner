@@ -3,21 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using pixel_miner.Core;
+using SFML.Graphics;
 using SFML.System;
 
 namespace pixel_miner.World
 {
     public class Board : Component
     {
-        public int TileSize { get; set; } = 32;
+        public float TileSize { get; set; } = 32;
 
         private Dictionary<GridPosition, Tile> tiles = new Dictionary<GridPosition, Tile>();
 
-        public Board(){}
+        public Board() { }
 
         public override void Start()
         {
-            InitializeGrid();
+            
         }
 
         public MoveResult ValidateMove(GridPosition from, GridPosition direction)
@@ -62,16 +63,39 @@ namespace pixel_miner.World
             );
         }
 
-        public void InitializeGrid()
+        public void InitializeGrid(int columns, int rows = 20)
         {
-            for (int x = -10; x < 10; x++)
+            ClearBoard();
+
+            var mainCamera = CameraManager.GetMainCamera();
+
+            if (mainCamera != null)
             {
-                for (int y = -10; y < 10; y++)
+                var viewportWidth = mainCamera.ViewSize.X;
+                TileSize = viewportWidth / columns;
+
+                Console.WriteLine($"viewport width = {viewportWidth}");
+                Console.WriteLine($"Tile Size = {TileSize}");
+            }
+
+            Console.WriteLine($"rows / 2 = {rows / 2}");
+            Console.WriteLine($"Min = {-(rows / 2)}, Max = {(rows / 2)}");
+
+            Console.WriteLine($"columns / 2 = {columns / 2}");
+            Console.WriteLine($"Min = {-(columns / 2)}, Max = {(columns / 2)}");
+
+            for (int col = -(columns / 2); col <= (columns / 2); col++)
+            {
+                for (int row = -(rows / 2); row <= (rows / 2); row++)
                 {
-                    var position = new GridPosition(x, y);
-                    tiles[position] = new Tile(position, fuelCost: 1, canMoveTo: true);
+                    var gridPosition = new GridPosition(col, row);
+                    var tile = new Tile(gridPosition);
+
+                    tiles.Add(gridPosition, tile);
                 }
             }
+
+            Console.WriteLine($"Num tiles = {tiles.Count}");
         }
 
         public IEnumerable<GridPosition> GetAllTilePositions()
@@ -79,9 +103,28 @@ namespace pixel_miner.World
             return tiles.Keys;
         }
 
+        public List<Vector2f> GetAllTileWorldPositions()
+        {
+            List<Vector2f> worldPositions = new List<Vector2f>();
+
+            foreach (var tile in tiles)
+            {
+                var gridPosition = tile.Key;
+                var worldPosition = GridToWorldPosition(gridPosition);
+                worldPositions.Add(worldPosition);
+            }
+
+            return worldPositions;
+        }
+
         public bool HasTile(GridPosition position)
         {
             return tiles.ContainsKey(position);
+        }
+
+        public void ClearBoard()
+        {
+            tiles.Clear();
         }
     }
 }

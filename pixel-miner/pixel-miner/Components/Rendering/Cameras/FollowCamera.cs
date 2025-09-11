@@ -57,6 +57,7 @@ namespace pixel_miner.Components.Rendering.Cameras
         public void SetTarget(GameObject target)
         {
             Target = target;
+            Transform.Position = target.Transform.Position;
         }
 
         public override void Render(RenderWindow window)

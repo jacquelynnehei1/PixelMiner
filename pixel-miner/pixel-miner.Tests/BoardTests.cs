@@ -1,19 +1,23 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using pixel_miner.Core;
 using pixel_miner.World;
-using Xunit;
 
 namespace pixel_miner.Tests
 {
     public class BoardTests
     {
+        private Board CreateTestBoard()
+        {
+            var gameObject = new GameObject("TestBoard");
+            var board = gameObject.AddComponent<Board>();
+            board.InitializeGrid(20);
+            return board;
+        }
+
         [Fact]
         public void GetTile_WithValidPosition_ShouldReturnTile()
         {
             // Arrange
-            var board = new Board();
+            var board = CreateTestBoard();
             var position = new GridPosition(0, 0);
 
             // Act
@@ -28,7 +32,7 @@ namespace pixel_miner.Tests
         public void GetTile_WithInvalidPosition_ShouldReturnNull()
         {
             // Arrange
-            var board = new Board();
+            var board = CreateTestBoard();
             var invalidPosition = new GridPosition(100, 100); // Outside grid bounds
 
             // Act
@@ -42,7 +46,7 @@ namespace pixel_miner.Tests
         public void ValidateMove_WithValidMove_ShouldReturnValidResult()
         {
             // Arrange
-            var board = new Board();
+            var board = CreateTestBoard();
             var from = new GridPosition(0, 0);
             var direction = new GridPosition(1, 0);
 
@@ -59,7 +63,7 @@ namespace pixel_miner.Tests
         public void ValidateMove_ToInvalidPosition_ShouldReturnInvalidResult()
         {
             // Arrange
-            var board = new Board();
+            var board = CreateTestBoard();
             var from = new GridPosition(9, 9);
             var direction = new GridPosition(10, 10); // Would go outside grid
 
@@ -75,7 +79,7 @@ namespace pixel_miner.Tests
         public void GridToWorldPosition_ShouldConvertCorrectly()
         {
             // Arrange
-            var board = new Board();
+            var board = CreateTestBoard();
             var gridPos = new GridPosition(2, 3);
             
             // Act
@@ -84,6 +88,34 @@ namespace pixel_miner.Tests
             // Assert
             Assert.Equal(2 * board.TileSize, worldPos.X);
             Assert.Equal(3 * board.TileSize, worldPos.Y);
+        }
+
+        [Fact]
+        public void HasTile_WithValidPosition_ShouldReturnTrue()
+        {
+            // Arrange
+            var board = CreateTestBoard();
+            var position = new GridPosition(0, 0);
+
+            // Act
+            bool hasTile = board.HasTile(position);
+
+            // Assert
+            Assert.True(hasTile);
+        }
+
+        [Fact]
+        public void HasTile_WithInvalidPosition_ShouldReturnFalse()
+        {
+            // Arrange
+            var board = CreateTestBoard();
+            var invalidPosition = new GridPosition(100, 100);
+
+            // Act
+            bool hasTile = board.HasTile(invalidPosition);
+
+            // Assert
+            Assert.False(hasTile);
         }
     }
 }

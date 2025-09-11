@@ -18,10 +18,14 @@ namespace pixel_miner.Scenes.Factories
         public override Scene CreateScene(RenderWindow window)
         {
             var scene = new Scene(SceneName);
+            
+            // Create camera that follows player
+            var camera = CreatePlayerCamera(window, null);
+            var mainCamera = camera.GetComponent<MainGameCamera>();
 
             var boardObject = new GameObject("Board");
             var board = boardObject.AddComponent<Board>();
-            board.InitializeGrid();
+            board.InitializeGrid(25);
 
             var player = CreatePlayer();
             var playerComponent = player.GetComponent<Player>()!;
@@ -32,7 +36,7 @@ namespace pixel_miner.Scenes.Factories
 
             var inputController = player.GetComponent<PlayerInputController>()!;
 
-            playerComponent.Initialize(board, maxFuel: 10, new GridPosition(0, 0));
+            playerComponent.Initialize(board, maxFuel: 100, new GridPosition(0, 0));
             inputController.Initialize(playerComponent);
             movementSystem.Initialize(board, playerComponent);
 
@@ -41,9 +45,11 @@ namespace pixel_miner.Scenes.Factories
                 Console.WriteLine($"Game Over: {reason}. \nPress R to Restart!");
             };
 
-            
-            // Create camera that follows player
-            var camera = CreatePlayerCamera(window, player);
+            if (mainCamera != null)
+            {
+                mainCamera.SetTarget(player);
+            }
+
             scene.AddGameObject(camera);
             scene.AddGameObject(player);
 

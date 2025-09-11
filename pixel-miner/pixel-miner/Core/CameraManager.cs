@@ -16,14 +16,15 @@ namespace pixel_miner.Core
 
         public static void AddCamera(Camera camera, bool isMainCamera = false)
         {
+
             if (!cameras.ContainsKey(camera.Name))
             {
                 cameras.Add(camera.Name, camera);
+            }
 
-                if (isMainCamera)
-                {
-                    mainCamera = camera;
-                }
+            if (isMainCamera)
+            {
+                SetMainCamera(camera);
             }
         }
 
