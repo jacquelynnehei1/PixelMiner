@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using pixel_miner.Data;
-using pixel_miner.Systems;
 using pixel_miner.World;
 
 namespace pixel_miner.Core

@@ -1,22 +1,19 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using pixel_miner.Data;
+using pixel_miner.Components.Gameplay;
+using pixel_miner.Core;
 using pixel_miner.World;
 
-namespace pixel_miner.Systems
+namespace pixel_miner.Components.Movement
 {
-    public class MovementSystem
+    public class MovementSystem : Component
     {
-        private Board board;
-        private PlayerData playerData;
+        private Board board = null!;
+        private Player playerData = null!;
 
         public event Action<GridPosition, GridPosition>? OnPlayerMoved;
         public event Action<string>? OnMoveBlocked;
         public event Action? OnOutOfFuel;
 
-        public MovementSystem(Board gameBoard, PlayerData player)
+        public void Initialize(Board gameBoard, Player player)
         {
             board = gameBoard;
             playerData = player;

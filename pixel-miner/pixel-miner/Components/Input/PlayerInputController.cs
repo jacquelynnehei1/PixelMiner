@@ -1,3 +1,4 @@
+using pixel_miner.Components.Gameplay;
 using pixel_miner.Core;
 using pixel_miner.Core.Enums;
 using pixel_miner.World;
@@ -22,13 +23,13 @@ namespace pixel_miner.Components.Input
             new KeyMapping { PrimaryKey = Keyboard.Key.D, AlternateKey = Keyboard.Key.Right, Direction = new GridPosition(1, 0) },
         };
 
-        private GameSession? gameSession;
+        private Player? player;
         private bool restartPressed;
 
-        public void Initialize(GameSession session)
+        public void Initialize(Player player)
         {
             RenderLayer = RenderLayer.World;
-            gameSession = session;
+            this.player = player;
         }
 
         public override void Update(float deltaTime)
@@ -39,8 +40,6 @@ namespace pixel_miner.Components.Input
 
         private void CheckMovementInput()
         {
-            if (gameSession == null) return;
-
             if (GameManager.Instance.IsGameOver) return;
 
             for (int i = 0; i < keyMappings.Length; i++)
@@ -49,7 +48,10 @@ namespace pixel_miner.Components.Input
 
                 if (currentlyPressed && !keyMappings[i].WasPressed)
                 {
-                    gameSession.HandleMoveRequest(keyMappings[i].Direction);
+                    if (player != null)
+                    {
+                        player.HandleMoveRequest(keyMappings[i].Direction);
+                    }
                 }
 
                 keyMappings[i].WasPressed = currentlyPressed;
@@ -58,15 +60,13 @@ namespace pixel_miner.Components.Input
 
         private void CheckRestartInput()
         {
-            if (gameSession == null) return;
-            
             if (GameManager.Instance.IsGameOver)
             {
                 bool restartCurrently = Keyboard.IsKeyPressed(Keyboard.Key.R);
 
                 if (restartCurrently && !restartPressed)
                 {
-                    gameSession.RestartGame();
+                    GameManager.Instance.RestartGame();
                 }
 
                 restartPressed = restartCurrently;

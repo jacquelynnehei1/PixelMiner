@@ -3,9 +3,9 @@ using pixel_miner.Components.Input;
 using pixel_miner.Components.Movement;
 using pixel_miner.Components.Rendering;
 using pixel_miner.Components.Rendering.Cameras;
-using pixel_miner.Components.UI;
 using pixel_miner.Core;
 using pixel_miner.Core.Enums;
+using pixel_miner.World;
 using SFML.System;
 using SFML.Graphics;
 
@@ -19,15 +19,27 @@ namespace pixel_miner.Scenes.Factories
         {
             var scene = new Scene(SceneName);
 
-            var gameSession = new GameSession(maxFuel: 20);
+            var player = CreatePlayer();
+            var playerComponent = player.GetComponent<Player>()!;
+            var movementSystem = player.GetComponent<MovementSystem>()!;
 
-            gameSession.OnGameOver += (reason) =>
+            var gameSession = new GameSession(playerComponent);
+
+            var initialPosition = gameSession.Board.GridToWorldPosition(playerComponent.GridPosition);
+            player.Transform.Position = initialPosition;
+
+            var inputController = player.GetComponent<PlayerInputController>()!;
+
+            playerComponent.Initialize(gameSession, maxFuel: 100, new GridPosition(0, 0));
+            inputController.Initialize(playerComponent);
+            movementSystem.Initialize(gameSession.Board, playerComponent);
+
+            GameManager.Instance.OnGameOver += (reason) =>
             {
                 Console.WriteLine($"Game Over: {reason}. \nPress R to Restart!");
             };
 
-            var player = CreatePlayer(ref gameSession);
-
+            
             // Create camera that follows player
             var camera = CreatePlayerCamera(window, player);
             scene.AddGameObject(camera);
@@ -48,23 +60,18 @@ namespace pixel_miner.Scenes.Factories
             return scene;
         }
 
-        private GameObject CreatePlayer(ref GameSession session)
+        private GameObject CreatePlayer()
         {
             var player = new GameObject("Player");
 
-            var initialWorldPosition = session.Board.GridToWorldPosition(session.PlayerData.GridPosition);
-            player.Transform.Position = initialWorldPosition;
-
-            var playerMover = player.AddComponent<PlayerMover>();
-            var playerComponent = player.AddComponent<Player>();
-            var inputController = player.AddComponent<PlayerInputController>();
+            player.AddComponent<PlayerMover>();
+            player.AddComponent<Player>();
+            player.AddComponent<PlayerInputController>();
+            player.AddComponent<MovementSystem>();
 
             var playerSpriteRenderer = player.AddComponent<SpriteRenderer>();
             playerSpriteRenderer.SetColor(Color.Red);
             playerSpriteRenderer.SetSize(new Vector2f(32, 32));
-
-            playerComponent.Initialize(session);
-            inputController.Initialize(session);
 
             return player;
         }

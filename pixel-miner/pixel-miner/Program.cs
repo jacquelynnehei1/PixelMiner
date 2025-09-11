@@ -12,14 +12,16 @@ namespace pixel_miner
             var desktopMode = VideoMode.DesktopMode;
             var window = new RenderWindow(desktopMode, "Pixel Miner");
             window.SetFramerateLimit(60);
-            
+
             window.Closed += (sender, e) => window.Close();
             window.KeyPressed += OnKeyPressed;
+
+            GameManager.Initialize();
 
             // Create game scene using factory
             var gameSceneFactory = new GameSceneFactory();
             var gameScene = gameSceneFactory.CreateScene(window);
-            
+
             // Set up scene manager
             SceneManager.AddScene(gameScene);
             SceneManager.LoadScene(gameSceneFactory.SceneName);
@@ -49,6 +51,7 @@ namespace pixel_miner
             }
 
             SceneManager.Destroy();
+            GameManager.Destroy();
         }
         
         static void OnKeyPressed(object? sender, KeyEventArgs e)
