@@ -2,6 +2,7 @@ using pixel_miner.Components.Rendering;
 using pixel_miner.Core.Enums;
 using pixel_miner.Core;
 using pixel_miner.World;
+using pixel_miner.World.Tiles;
 using pixel_miner.Utils.Extensions;
 using SFML.Graphics;
 using SFML.System;

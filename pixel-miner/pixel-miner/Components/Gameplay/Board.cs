@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using pixel_miner.Core;
-using SFML.Graphics;
+using pixel_miner.World.Tiles;
 using SFML.System;
 
 namespace pixel_miner.World
