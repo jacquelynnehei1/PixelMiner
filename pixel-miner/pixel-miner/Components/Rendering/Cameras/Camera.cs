@@ -28,9 +28,9 @@ namespace pixel_miner.Components.Rendering.Cameras
             ViewSize = size;
         }
 
-        public void SetViewport(float left, float right, float width, float height)
+        public void SetViewport(float left, float top, float width, float height)
         {
-            Viewport = new FloatRect(left, right, width, height);
+            Viewport = new FloatRect(left, top, width, height);
         }
 
         public virtual View GetView()

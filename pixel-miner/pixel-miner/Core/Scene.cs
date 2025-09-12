@@ -9,7 +9,7 @@ namespace pixel_miner.Core
         public string Name { get; set; }
         public bool Active { get; set; } = true;
 
-        private List<GameObject> gameObjects = new List<GameObject>();
+        protected List<GameObject> gameObjects = new List<GameObject>();
         private List<GameObject> objectsToAdd = new List<GameObject>();
         private List<GameObject> objectsToRemove = new List<GameObject>();
 
@@ -57,7 +57,7 @@ namespace pixel_miner.Core
             // Override in derived classes for cleanup
         }
 
-        public void Update(float deltaTime)
+        public virtual void Update(float deltaTime)
         {
             if (!Active) return;
 
@@ -69,50 +69,12 @@ namespace pixel_miner.Core
             }
         }
 
-        public void Render(RenderWindow window)
+        public virtual void Render(RenderWindow window)
         {
-            if (!Active) return;
-
-            var mainCamera = CameraManager.GetMainCamera();
-            if (mainCamera != null)
-            {
-                window.SetView(mainCamera.GetView());
-                RenderOnLayer(window, RenderLayer.World);
-            }
-
-            var hudCamera = CameraManager.GetCamera("HUD");
-            if (hudCamera != null)
-            {
-                window.SetView(hudCamera.GetView());
-                RenderOnLayer(window, RenderLayer.UI);
-            }
+            // handled in children class
         }
 
-        private void RenderOnLayer(RenderWindow window, RenderLayer layer)
-        {
-            var renderersToRender = new List<Renderer>();
-
-            foreach (var gameObject in gameObjects)
-            {
-                if (gameObject.Active)
-                {
-                    var renderers = gameObject.GetComponents<Renderer>()
-                    .Where(r => r.Enabled && r.RenderLayer == layer)
-                    .ToList();
-
-                    renderersToRender.AddRange(renderers);
-                }
-            }
-
-            var sortedRenderers = renderersToRender.OrderBy(r => r.SortingOrder).ToList();
-
-            foreach (var renderer in sortedRenderers)
-            {
-                renderer.Render(window);
-            }
-        }
-
-        public void Destroy()
+        public virtual void Destroy()
         {
             foreach (var gameObject in gameObjects)
             {

@@ -13,7 +13,7 @@ namespace pixel_miner.Components.Rendering
         /// <summary>
         /// The rendering layer
         /// </summary>
-        public RenderLayer RenderLayer { get; set; } = RenderLayer.World;
+        public RenderView RenderVeiw { get; set; }
 
         /// <summary>
         /// Sorting order iwthin the render layer. Higher values on top.
@@ -21,5 +21,9 @@ namespace pixel_miner.Components.Rendering
         public int SortingOrder { get; set; } = 0;
 
         public abstract override void Render(RenderWindow window);
+        public virtual void SetRenderView(RenderView view)
+        {
+            RenderVeiw = view;
+        }
     }
 }

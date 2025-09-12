@@ -7,6 +7,7 @@ namespace pixel_miner.World
     public class Board : Component
     {
         public float TileSize { get; set; } = 32;
+        public int SurfaceDepth { get; private set; }
 
         // Dynamic loading configuration
         private int loadAheadDistance = 15;
@@ -24,11 +25,6 @@ namespace pixel_miner.World
 
         public Board() { }
 
-        public override void Start()
-        {
-
-        }
-
         public void InitializeGrid(int columns, int surfaceRows = 5, int undergroundRows = 15)
         {
             ClearBoard();
@@ -45,6 +41,8 @@ namespace pixel_miner.World
                 float gridStartY = -(viewportHeight / 4f);
                 currentTopRow = (int)(gridStartY / TileSize);
                 currentBottomRow = currentTopRow + surfaceRows + undergroundRows;
+
+                SurfaceDepth = surfaceRows;
 
                 Console.WriteLine($"Initial grid: Top row {currentTopRow}, Bottom row {currentBottomRow}");
             }
@@ -64,7 +62,7 @@ namespace pixel_miner.World
 
                     if (!tiles.ContainsKey(gridPosition))
                     {
-                        var tile = new Tile(gridPosition);
+                        var tile = CreateTileForPosition(gridPosition);
                         tiles.Add(gridPosition, tile);
                         newTiles.Add(gridPosition);
                     }
@@ -78,6 +76,18 @@ namespace pixel_miner.World
                 OnTilesAdded?.Invoke(newTiles);
             }
 
+        }
+
+        private Tile CreateTileForPosition(GridPosition position)
+        {
+            int depth = position.Y - currentTopRow;
+
+            if (depth < SurfaceDepth)
+            {
+                return new GrassTile(position);
+            }
+
+            return new DirtTile(position);
         }
 
         public void CheckAndExpandGrid(GridPosition position)
@@ -182,6 +192,23 @@ namespace pixel_miner.World
             if (tiles.Count == 0) return 0;
 
             return tiles.Keys.Max(pos => pos.Y);
+        }
+
+        public bool TryMineTile(GridPosition targetPosition, out ResourceDrop? resource)
+        {
+            resource = null;
+
+            var tile = GetTile(targetPosition);
+            if (tile == null || tile is not MinableTile minableTile)
+            {
+                return false;
+            }
+
+            resource = minableTile.Mine();
+
+            SetTile(targetPosition, new EmptyTile(targetPosition));
+
+            return true;
         }
     }
 }

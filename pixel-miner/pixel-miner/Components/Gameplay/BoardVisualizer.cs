@@ -20,6 +20,14 @@ namespace pixel_miner.Components.Gameplay
         public Color DeepTileColor { get; set; } = new Color(101, 67, 33);
         public float TilePadding { get; set; } = 2f;
 
+        public Color GrassColor { get; set; } = new Color(144, 238, 144);           // Light Green
+        public Color DirtColor { get; set; } = new Color(139, 119, 101);            // Brown
+        public Color EmptyColor { get; set; } = new Color(0, 0, 0, 255);            // Transparent
+        public Color StoneColor { get; set; } = new Color(128, 128, 128);           // Gray
+        public Color IronColor { get; set; } = new Color(64, 64, 64);               // Dark Gray
+        public Color GemColor { get; set; } = new Color(128, 0, 128);               // Purple
+        public Color FuelCrystalColor { get; set; } = new Color(0, 255, 255);       // Cyan
+
         private bool hasCreatedInitialTiles = false;
 
         public override void Start()
@@ -42,6 +50,30 @@ namespace pixel_miner.Components.Gameplay
             {
                 CreateVisualsForAllTiles();
                 hasCreatedInitialTiles = true;
+            }
+
+            UpdateExistingTileVisuals();
+        }
+
+        private void UpdateExistingTileVisuals()
+        {
+            if (board == null) return;
+
+            foreach (var tile in tileVisuals.ToList())
+            {
+                var position = tile.Key;
+                var visual = tile.Value;
+                var currentTile = board.GetTile(position);
+
+                if (currentTile != null)
+                {
+                    var spriteRenderer = visual.GetComponent<SpriteRenderer>();
+                    if (spriteRenderer != null)
+                    {
+                        var newColor = GetTileColor(position, currentTile);
+                        spriteRenderer.SetColor(newColor);
+                    }
+                }
             }
         }
 
@@ -74,7 +106,7 @@ namespace pixel_miner.Components.Gameplay
             spriteRenderer.SetColor(GetTileColor(tilePosition, tile));
             spriteRenderer.SetSize(new Vector2f(tileSize, tileSize));
 
-            spriteRenderer.RenderLayer = RenderLayer.World;
+            spriteRenderer.SetRenderView(RenderView.CenterPanel);
             spriteRenderer.SortingOrder = -1;
 
             tileVisuals[tilePosition] = tileObject;
@@ -94,24 +126,17 @@ namespace pixel_miner.Components.Gameplay
 
         private Color GetTileColor(GridPosition position, Tile tile)
         {
-            if (board == null) return DefaultTileColor;
-
-            var topRow = board.GetTopRowIndex();
-            int depth = position.Y - topRow;
-
-            if (depth <= 2)
+            return tile switch
             {
-                return SurfaceTileColor;
-            }
-            else if (depth <= 10)
-            {
-                return DefaultTileColor;
-            }
-            else
-            {
-                float depthFactor = Math.Min(1f, (depth - 10) / 20f);
-                return DefaultTileColor.Lerp(DeepTileColor, depthFactor);
-            }
+                GrassTile => GrassColor,
+                EmptyTile => EmptyColor,
+                DirtTile => DirtColor,
+                StoneTile => StoneColor,
+                IronOreTile => IronColor,
+                PreciousGemTile => GemColor,
+                FeulCrystalTile => FuelCrystalColor,
+                _ => DefaultTileColor
+            };
         }
 
         private void OnTilesAdded(IEnumerable<GridPosition> newTilePositions)

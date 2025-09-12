@@ -7,12 +7,18 @@ namespace pixel_miner.Components.Movement
 {
     public class PlayerMover : Mover
     {
+        public GridPosition LastFacingDirection { get; set; } = new GridPosition(0, 1);
         private Queue<Vector2f> moveQueue = new Queue<Vector2f>();
         private Vector2f targetPosition;
 
         public override void Start()
         {
             MoveSpeed = 200f;
+        }
+
+        public void SetFacingDirection(GridPosition direction)
+        {
+            LastFacingDirection = direction;
         }
 
         public void QueueMove(Vector2f target)

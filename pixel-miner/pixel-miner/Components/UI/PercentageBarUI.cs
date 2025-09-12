@@ -15,7 +15,6 @@ namespace pixel_miner.Components.UI
         private Text labelText = null!;
 
         // Configuration
-        public Vector2f Position { get; set; } = new Vector2f(20f, 20f);
         public Vector2f Size { get; set; } = new Vector2f(200f, 20f);
         public Color BackgroundColor { get; set; } = new Color(255, 255, 255);
         public Color FillColor { get; set; } = new Color(237, 161, 47);
@@ -23,19 +22,20 @@ namespace pixel_miner.Components.UI
         public bool ShowText { get; set; } = true;
         public string Label { get; set; } = "";
         public string FontPath { get; set; } = "";
+        public Vector2f LabelOffset = new Vector2f(0f, 0f);
 
         // State
         private float currentPercentage = 1.0f;
 
         public PercentageBarUI()
         {
-            RenderLayer = RenderLayer.UI;
             InitializeVisualElements();
         }
 
         public override void Start()
         {
             UpdateVisualElements();
+            Console.WriteLine($"Font is null or empty? {FontPath.IsNullOrEmpty()}");
         }
 
         public override void Render(RenderWindow window)
@@ -89,6 +89,11 @@ namespace pixel_miner.Components.UI
             labelText.DisplayedString = label;
         }
 
+        public void SetLabelOffset(Vector2f offset)
+        {
+            LabelOffset = offset;
+        }
+
         /// <summary>
         /// Configure the bar's appearance and position
         /// </summary>
@@ -97,9 +102,8 @@ namespace pixel_miner.Components.UI
         /// <param name="backgroundColor"></param>
         /// <param name="fillColor"></param>
         /// <param name="showText"></param>
-        public void Configure(Vector2f position, Vector2f size, Color backgroundColor, Color fillColor, Color textColor, bool showText = true)
+        public void Configure(Vector2f size, Color backgroundColor, Color fillColor, Color textColor, bool showText = true)
         {
-            Position = position;
             Size = size;
             BackgroundColor = backgroundColor;
             FillColor = fillColor;
@@ -116,9 +120,8 @@ namespace pixel_miner.Components.UI
 
             labelText = new Text();
             labelText.DisplayedString = "Test";
-            labelText.CharacterSize = 14;
+            labelText.CharacterSize = 24;
             labelText.FillColor = Color.White;
-            labelText.Position = Position;
 
             if (!FontPath.IsNullOrEmpty())
             {
@@ -128,15 +131,18 @@ namespace pixel_miner.Components.UI
 
         private void UpdateVisualElements()
         {
+            if (Transform == null) return;
+
+            var position = Transform.Position;
+
             backgroundBar.Size = Size;
-            backgroundBar.Position = Position;
+            backgroundBar.Position = position;
             backgroundBar.FillColor = BackgroundColor;
 
             UpdateFillBar();
 
-            var labelPosition = Position;
-            labelPosition.X += (labelText.GetLocalBounds().Width / 2) + 5f;
-            labelPosition.Y += (Size.Y / 2) - 2.5f;
+            var labelPosition = position;
+            labelPosition += LabelOffset;
 
             labelText.DisplayedString = Label;
             labelText.Origin = new Vector2f(labelText.GetLocalBounds().Width / 2, labelText.GetLocalBounds().Height / 2);
@@ -147,7 +153,7 @@ namespace pixel_miner.Components.UI
         {
             float currentWidth = Size.X * currentPercentage;
             fillBar.Size = new Vector2f(currentWidth, Size.Y);
-            fillBar.Position = Position;
+            fillBar.Position = Transform.Position;
             fillBar.FillColor = FillColor;
         }
     }

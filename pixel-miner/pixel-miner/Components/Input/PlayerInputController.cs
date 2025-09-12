@@ -25,15 +25,21 @@ namespace pixel_miner.Components.Input
 
         private Player? player;
         private bool restartPressed;
+        private bool drillPressed;
+
+        public event Action? OnMineRequested;
 
         public void Initialize(Player player)
         {
             this.player = player;
+
+            OnMineRequested += player.TryMine;
         }
 
         public override void Update(float deltaTime)
         {
             CheckMovementInput();
+            CheckDrillingInput();
             CheckRestartInput();
         }
 
@@ -57,6 +63,20 @@ namespace pixel_miner.Components.Input
             }
         }
 
+        private void CheckDrillingInput()
+        {
+            if (GameManager.Instance.IsGameOver) return;
+
+            bool currentlyPressed = Keyboard.IsKeyPressed(Keyboard.Key.Space);
+
+            if (currentlyPressed && !drillPressed)
+            {
+                OnMineRequested?.Invoke();
+            }
+
+            drillPressed = currentlyPressed;
+        }
+
         private void CheckRestartInput()
         {
             if (GameManager.Instance.IsGameOver)
@@ -69,6 +89,14 @@ namespace pixel_miner.Components.Input
                 }
 
                 restartPressed = restartCurrently;
+            }
+        }
+
+        public override void Destroy()
+        {
+            if (player != null)
+            {
+                OnMineRequested -= player.TryMine;
             }
         }
     }

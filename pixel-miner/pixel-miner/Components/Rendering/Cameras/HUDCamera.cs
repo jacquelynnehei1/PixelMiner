@@ -12,6 +12,8 @@ namespace pixel_miner.Components.Rendering.Cameras
             var view = new View(center, ViewSize);
             view.Rotation = 0f;
 
+            view.Viewport = Viewport;
+
             return view;
         }
     }

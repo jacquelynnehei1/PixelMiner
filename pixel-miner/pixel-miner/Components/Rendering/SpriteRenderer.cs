@@ -28,7 +28,6 @@ namespace pixel_miner.Components.Rendering
 
         public override void Start()
         {
-            RenderLayer = RenderLayer.World;
             UpdateShape();
         }
 

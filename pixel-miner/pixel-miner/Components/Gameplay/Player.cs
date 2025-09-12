@@ -147,10 +147,21 @@ namespace pixel_miner.Components.Gameplay
                 GameManager.Instance.SetGameOver(message);
             }
         }
-        
+
         private void HandleMoveBlocked(string reason)
         {
             Console.WriteLine($"Move blocked: {reason}");
+        }
+
+        public void TryMine()
+        {
+            if (GameManager.Instance.IsGameOver) return;
+            if (mover == null) return;
+
+            var facingDirection = mover.LastFacingDirection;
+            var targetPosition = GridPosition + facingDirection;
+
+            movementSystem.RequestMine(targetPosition);
         }
     }
 }
