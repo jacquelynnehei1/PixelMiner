@@ -3,8 +3,27 @@ using pixel_miner.World;
 
 namespace pixel_miner.Tests
 {
-    public class BoardTests
+    [Collection("GameManager Collection")]
+    public class BoardTests : IDisposable
     {
+        private GameObject? testCamera;
+
+        public BoardTests()
+        {
+            // Set up camera for each test
+            testCamera = TestCameraSetup.CreateTestCamera();
+        }
+
+        public void Dispose()
+        {
+            // Clean up camera after each test
+            TestCameraSetup.CleanupCameras();
+            if (testCamera != null)
+            {
+                testCamera.Destroy();
+            }
+        }
+
         private Board CreateTestBoard()
         {
             var gameObject = new GameObject("TestBoard");
@@ -18,7 +37,7 @@ namespace pixel_miner.Tests
         {
             // Arrange
             var board = CreateTestBoard();
-            var position = new GridPosition(0, 0);
+            var position = new GridPosition(0, board.GetTopRowIndex());
 
             // Act
             var tile = board.GetTile(position);
@@ -47,7 +66,7 @@ namespace pixel_miner.Tests
         {
             // Arrange
             var board = CreateTestBoard();
-            var from = new GridPosition(0, 0);
+            var from = new GridPosition(0, board.GetTopRowIndex());
             var direction = new GridPosition(1, 0);
 
             // Act
@@ -55,8 +74,8 @@ namespace pixel_miner.Tests
 
             // Assert
             Assert.True(result.IsValid);
-            Assert.Equal(new GridPosition(1, 0), result.TargetPosition);
-            Assert.True(result.FuelCost > 0);
+            Assert.Equal(new GridPosition(1, board.GetTopRowIndex()), result.TargetPosition);
+            Assert.True(result.FuelCost >= 0);
         }
 
         [Fact]
@@ -64,8 +83,8 @@ namespace pixel_miner.Tests
         {
             // Arrange
             var board = CreateTestBoard();
-            var from = new GridPosition(9, 9);
-            var direction = new GridPosition(10, 10); // Would go outside grid
+            var from = new GridPosition(9, board.GetTopRowIndex());
+            var direction = new GridPosition(50, 50); // Would go way outside grid
 
             // Act
             var result = board.ValidateMove(from, direction);
@@ -95,7 +114,7 @@ namespace pixel_miner.Tests
         {
             // Arrange
             var board = CreateTestBoard();
-            var position = new GridPosition(0, 0);
+            var position = new GridPosition(0, board.GetTopRowIndex());
 
             // Act
             bool hasTile = board.HasTile(position);

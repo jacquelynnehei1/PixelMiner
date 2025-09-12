@@ -1,4 +1,7 @@
+using pixel_miner.Components.Rendering.Cameras;
 using pixel_miner.Core;
+using SFML.Graphics;
+using SFML.System;
 
 namespace pixel_miner.Tests
 {
