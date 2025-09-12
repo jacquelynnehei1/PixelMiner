@@ -9,7 +9,7 @@ namespace pixel_miner.Core
         private static Camera? mainCamera = null;
         private static Dictionary<string, Camera> cameras = new Dictionary<string, Camera>();
 
-        public static void SetMainCamera(Camera camera)
+        public static void SetMainCamera(Camera? camera)
         {
             mainCamera = camera;
         }

@@ -145,7 +145,7 @@ namespace pixel_miner.Scenes.Factories
             var background = gameObject.AddComponent<SpriteRenderer>();
             background.SetRenderView(RenderView.RightPanel);
             background.SortingOrder = -2;
-            background.SetColor(Color.Blue);
+            background.SetColor(Color.Black);
             background.SetSize(rightCamera.ViewSize);
 
             gameObject.Transform.Position = new Vector2f(rightCamera.ViewSize.X / 2, rightCamera.ViewSize.Y / 2);

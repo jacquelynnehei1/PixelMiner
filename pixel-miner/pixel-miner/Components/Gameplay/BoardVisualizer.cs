@@ -134,7 +134,7 @@ namespace pixel_miner.Components.Gameplay
                 StoneTile => StoneColor,
                 IronOreTile => IronColor,
                 PreciousGemTile => GemColor,
-                FeulCrystalTile => FuelCrystalColor,
+                FuelCrystalTile => FuelCrystalColor,
                 _ => DefaultTileColor
             };
         }
