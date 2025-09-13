@@ -2,6 +2,7 @@ using pixel_miner.Components.Movement;
 using pixel_miner.Core;
 using pixel_miner.Core.Enums;
 using pixel_miner.World;
+using pixel_miner.World.Enums;
 using SFML.System;
 
 namespace pixel_miner.Components.Gameplay
@@ -19,6 +20,7 @@ namespace pixel_miner.Components.Gameplay
         private PlayerMover? mover;
         private MovementSystem movementSystem = null!;
         private Board? board = null!;
+        private Inventory? inventory = null!;
 
         public override void Start()
         {
@@ -36,6 +38,15 @@ namespace pixel_miner.Components.Gameplay
         {
             board = gameBoard;
             movementSystem = GameObject.GetComponent<MovementSystem>()!;
+
+            inventory = GameObject.GetComponent<Inventory>();
+            if (inventory == null)
+            {
+                inventory = GameObject.AddComponent<Inventory>();
+            }
+
+            inventory.OnInventoryFull += HandleInventoryFull;
+            inventory.OnResourceAdded += HandleResourceAdded;
 
             MaxFuel = maxFuel;
             GridPosition = gridPosition;
@@ -162,6 +173,36 @@ namespace pixel_miner.Components.Gameplay
             var targetPosition = GridPosition + facingDirection;
 
             movementSystem.RequestMine(targetPosition);
+        }
+
+        public bool TryCollectResource(ResourceDrop resourceDrop)
+        {
+            if (inventory == null) return false;
+
+            if (resourceDrop.Type == ResourceType.Fuel)
+            {
+                AddFuel(resourceDrop.Amount);
+                Console.WriteLine($"Collected {resourceDrop.Amount} fuel! Current fuel: {CurrentFuel}/{MaxFuel}");
+                return true;
+            }
+
+            int amountAdded = inventory.TryAddResource(resourceDrop.Type, resourceDrop.Amount);
+            return amountAdded > 0;
+        }
+
+        public Inventory? GetInventory()
+        {
+            return inventory;
+        }
+
+        private void HandleInventoryFull(ResourceType resourceType)
+        {
+            Console.WriteLine($"Cannot collect {resourceType} - inventory full!");
+        }
+
+        private void HandleResourceAdded(ResourceType resourceType, int amount)
+        {
+            Console.WriteLine($"Collected {amount} {resourceType}");
         }
     }
 }

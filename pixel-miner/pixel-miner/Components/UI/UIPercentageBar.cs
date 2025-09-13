@@ -7,7 +7,7 @@ using SFML.System;
 
 namespace pixel_miner.Components.UI
 {
-    public class PercentageBarUI : Renderer
+    public class UIPercentageBar : Renderer
     {
         // Visual Elements
         private RectangleShape backgroundBar = null!;
@@ -27,7 +27,7 @@ namespace pixel_miner.Components.UI
         // State
         private float currentPercentage = 1.0f;
 
-        public PercentageBarUI()
+        public UIPercentageBar()
         {
             InitializeVisualElements();
         }

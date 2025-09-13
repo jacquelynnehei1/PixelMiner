@@ -46,6 +46,12 @@ namespace pixel_miner.Scenes.Factories
             board.InitializeGrid(25);
             scene.AddGameObject(boardObject);
 
+            var leftCanvas = CreateLeftPanelCanvas(leftCamera);
+            var rightCanvas = CreateRightPanelCanvas(rightCamera);
+
+            scene.AddGameObject(leftCanvas);
+            scene.AddGameObject(rightCanvas);
+
             var spawnPosition = new GridPosition(0, board.GetTopRowIndex());
 
             var player = CreatePlayer();
@@ -94,6 +100,7 @@ namespace pixel_miner.Scenes.Factories
             player.AddComponent<Player>();
             player.AddComponent<PlayerInputController>();
             player.AddComponent<MovementSystem>();
+            player.AddComponent<Inventory>();
 
             var playerSpriteRenderer = player.AddComponent<SpriteRenderer>();
             playerSpriteRenderer.SetColor(Color.Red);
@@ -189,7 +196,7 @@ namespace pixel_miner.Scenes.Factories
         public GameObject CreateFuelGauge(Player player, Camera camera)
         {
             var gameObject = new GameObject("FuelGauge");
-            var fuelBar = gameObject.AddComponent<PercentageBarUI>();
+            var fuelBar = gameObject.AddComponent<UIPercentageBar>();
 
             fuelBar.SetRenderView(RenderView.LeftPanel);
 
@@ -237,6 +244,42 @@ namespace pixel_miner.Scenes.Factories
             fuelBar.SetPercentage(initialPercentage);
 
             return gameObject;
+        }
+
+        private GameObject CreateLeftPanelCanvas(Camera leftCamera)
+        {
+            var canvasObject = new GameObject("LeftPanelCanvas");
+            var canvas = canvasObject.AddComponent<UICanvas>();
+
+            canvas.TargetView = RenderView.LeftPanel;
+            canvas.CanvasSize = leftCamera.ViewSize;
+
+            return canvasObject;
+        }
+
+        private GameObject CreateRightPanelCanvas(Camera rightCamera)
+        {
+            var canvasObject = new GameObject("RightPanelCanvas");
+            var canvas = canvasObject.AddComponent<UICanvas>();
+
+            canvas.TargetView = RenderView.RightPanel;
+            canvas.CanvasSize = rightCamera.ViewSize;
+
+            return canvasObject;
+        }
+
+        private GameObject CreateInventoryPanel(Player player, UICanvas rightCanvas)
+        {
+            var inventoryPanelObject = new GameObject("InventoryPanel");
+
+            var playerInventory = player.GetInventory();
+            if (playerInventory == null)
+            {
+                Console.WriteLine("WARNING: Player inventory not found for UI");
+                return inventoryPanelObject;
+            }
+
+            return inventoryPanelObject;
         }
     }
 }

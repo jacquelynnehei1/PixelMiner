@@ -80,14 +80,7 @@ namespace pixel_miner.World
 
         private Tile CreateTileForPosition(GridPosition position)
         {
-            int depth = position.Y - currentTopRow;
-
-            if (depth < SurfaceDepth)
-            {
-                return new GrassTile(position);
-            }
-
-            return new DirtTile(position);
+            return WorldGenerator.GenerateTile(position, currentTopRow);
         }
 
         public void CheckAndExpandGrid(GridPosition position)

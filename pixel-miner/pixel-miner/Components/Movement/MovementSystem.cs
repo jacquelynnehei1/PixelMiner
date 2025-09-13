@@ -87,15 +87,18 @@ namespace pixel_miner.Components.Movement
 
             if (board.TryMineTile(targetPosition, out ResourceDrop? resource) && resource != null)
             {
-                if (resource.Type == ResourceType.Fuel)
+                bool resourceCollected = playerData.TryCollectResource(resource);
+
+                if (resourceCollected)
                 {
-                    playerData.AddFuel(resource.Amount);
+                    OnResourceMined?.Invoke(targetPosition, resource);
+                    Console.WriteLine($"Mined and collected {resource.Amount} {resource.Type} at {targetPosition}");
                 }
-
-                OnResourceMined?.Invoke(targetPosition, resource);
-                Console.WriteLine($"Mined {resource.Amount} {resource.Type} at {targetPosition}");
-
-                return;
+                else
+                {
+                    OnResourceMined?.Invoke(targetPosition, resource);
+                    Console.WriteLine($"Mined {resource.Amount} {resource.Type} at {targetPosition} but could not collect (inventory full)");
+                }
             }
 
             OnMiningFailed?.Invoke("Mining failed");
@@ -112,25 +115,45 @@ namespace pixel_miner.Components.Movement
             var currentPosition = playerData.GridPosition;
             var startPosition = playerData.RespawnPosition;
 
-            Console.WriteLine($"Restarting from {currentPosition} to {startPosition}");
+            Console.WriteLine($"Attempting return from {currentPosition} to {startPosition}");
 
             if (!currentPosition.Equals(startPosition))
             {
-                var path = Pathfinder.CalculatePath(currentPosition, startPosition);
-                Console.WriteLine("Raw path from pathfinder: ");
-                foreach (var step in path)
+                // Use the empty tiles network pathfinding
+                var path = Pathfinder.FindPathThroughEmptyTiles(currentPosition, startPosition, board);
+                
+                if (path.Count == 0)
                 {
-                    Console.WriteLine($"Step: {step}");
+                    Console.WriteLine("ERROR: No path found through mined tunnels back to surface!");
+                    Console.WriteLine("This should not happen unless there's a bug in the pathfinding.");
+                    return;
                 }
 
-                var currentStep = currentPosition;
-                foreach (var nextStep in path)
+                Console.WriteLine($"Found path through empty tiles with {path.Count} steps");
+                
+                // Execute the path step by step
+                while (path.Count > 0)
                 {
-                    var direction = nextStep - currentStep;
-                    Console.WriteLine($"Moving from {currentStep} to {nextStep}, direction: {direction}");
+                    var nextStep = path.Dequeue();
+                    var direction = nextStep - playerData.GridPosition;
+                    
+                    Console.WriteLine($"Return step: moving to {nextStep}, direction: {direction}");
                     RequestMove(direction, bypassFuelCheck: true);
-                    currentStep = nextStep;
-                }        
+                }
+                
+                // Verify we reached the target
+                if (playerData.GridPosition.Equals(startPosition))
+                {
+                    Console.WriteLine("Successfully returned to surface via mined tunnels");
+                }
+                else
+                {
+                    Console.WriteLine($"WARNING: Return incomplete. Expected {startPosition}, got {playerData.GridPosition}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Already at starting position");
             }
         }
     }
