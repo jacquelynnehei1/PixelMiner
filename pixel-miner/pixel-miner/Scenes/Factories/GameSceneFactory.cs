@@ -9,6 +9,7 @@ using pixel_miner.World;
 using SFML.System;
 using SFML.Graphics;
 using pixel_miner.Components.UI;
+using pixel_miner.Components.UI.Display;
 
 namespace pixel_miner.Scenes.Factories
 {
@@ -47,9 +48,9 @@ namespace pixel_miner.Scenes.Factories
             scene.AddGameObject(boardObject);
 
             var leftCanvas = CreateLeftPanelCanvas(leftCamera);
-            var rightCanvas = CreateRightPanelCanvas(rightCamera);
-
             scene.AddGameObject(leftCanvas);
+
+            var rightCanvas = CreateRightPanelCanvas(rightCamera);
             scene.AddGameObject(rightCanvas);
 
             var spawnPosition = new GridPosition(0, board.GetTopRowIndex());
@@ -89,6 +90,9 @@ namespace pixel_miner.Scenes.Factories
 
             var fuelGauge = CreateFuelGauge(playerComponent, leftCamera);
             scene.AddGameObject(fuelGauge);
+
+            var inventoryPanel = CreateInventoryPanel(playerComponent, rightCanvas.GetComponent<UICanvas>()!);
+            scene.AddGameObject(inventoryPanel);
 
             return scene;
         }
@@ -275,9 +279,19 @@ namespace pixel_miner.Scenes.Factories
             var playerInventory = player.GetInventory();
             if (playerInventory == null)
             {
-                Console.WriteLine("WARNING: Player inventory not found for UI");
+                Console.WriteLine("WANRING: Player inventory not found for UI");
                 return inventoryPanelObject;
             }
+
+            var inventoryPanel = inventoryPanelObject.AddComponent<ResourceDisplayContainer>();
+            inventoryPanel.Initialize(playerInventory);
+
+            inventoryPanel.SetCanvas(rightCanvas);
+            rightCanvas.RegisterUIElement(inventoryPanel);
+
+            inventoryPanel.SetPosition(0f, 100f);
+
+            Console.WriteLine("Created full-width inventory panel for right panel");
 
             return inventoryPanelObject;
         }
