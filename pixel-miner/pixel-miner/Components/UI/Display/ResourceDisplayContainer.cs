@@ -20,15 +20,21 @@ namespace pixel_miner.Components.UI.Display
 
             SetupPanel();
             CreateHeader();
-            CreateResourceDisplays();
-            PositionAllElements();
+            // CreateResourceDisplays();
+            // PositionAllElements();
         }
 
         private void SetupPanel()
         {
+            Console.WriteLine("Setting up panel with StretchHorizontal");
             SetAnchor(AnchorPreset.StretchHorizontal);
             SetSize(0, 150);
-            SetBackground(new Color(0, 50, 100, 100));
+            SetBackground(Color.Yellow);
+            
+            // Debug: Check if the values were set correctly
+            Console.WriteLine($"After setup - SizeDelta: ({UITransform.SizeDelta.X}, {UITransform.SizeDelta.Y})");
+            Console.WriteLine($"After setup - AnchorMin: ({UITransform.AnchorMin.X}, {UITransform.AnchorMin.Y})");
+            Console.WriteLine($"After setup - AnchorMax: ({UITransform.AnchorMax.X}, {UITransform.AnchorMax.Y})");
         }
 
         private void CreateHeader()

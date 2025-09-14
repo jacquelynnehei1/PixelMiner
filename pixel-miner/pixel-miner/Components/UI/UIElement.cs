@@ -19,16 +19,29 @@ namespace pixel_miner.Components.UI
 
         public override void Start()
         {
-            UITransform = GameObject.GetComponent<UITransform>();
-            if (UITransform == null)
+            EnsureUITransformExists();
+        }
+
+        private void EnsureUITransformExists()
+        {
+            if (UITransform == null && GameObject != null)
             {
+                var existingTransform = GameObject.GetComponent<UITransform>();
+                if (existingTransform != null)
+                {
+                    UITransform = existingTransform;
+                    return;
+                }
+
                 UITransform = GameObject.AddComponent<UITransform>();
+                UITransform.Start();
             }
         }
 
         public void SetCanvas(UICanvas targetCanvas)
         {
             canvas = targetCanvas;
+            EnsureUITransformExists();
             UITransform.Canvas = targetCanvas;
             RenderVeiw = targetCanvas.TargetView;
         }

@@ -279,19 +279,29 @@ namespace pixel_miner.Scenes.Factories
             var playerInventory = player.GetInventory();
             if (playerInventory == null)
             {
-                Console.WriteLine("WANRING: Player inventory not found for UI");
+                Console.WriteLine("WARNING: Player inventory not found for UI");
                 return inventoryPanelObject;
             }
 
             var inventoryPanel = inventoryPanelObject.AddComponent<ResourceDisplayContainer>();
-            inventoryPanel.Initialize(playerInventory);
-
+            
+            // Set canvas and initialize
             inventoryPanel.SetCanvas(rightCanvas);
             rightCanvas.RegisterUIElement(inventoryPanel);
+            inventoryPanel.Initialize(playerInventory);
 
-            inventoryPanel.SetPosition(0f, 100f);
-
-            Console.WriteLine("Created full-width inventory panel for right panel");
+            // Debug output to see what's happening with the stretch
+            Console.WriteLine($"Right canvas size: {rightCanvas.CanvasSize.X} x {rightCanvas.CanvasSize.Y}");
+            
+            var transform = inventoryPanel.UITransform;
+            Console.WriteLine($"AnchorMin: ({transform.AnchorMin.X}, {transform.AnchorMin.Y})");
+            Console.WriteLine($"AnchorMax: ({transform.AnchorMax.X}, {transform.AnchorMax.Y})");
+            Console.WriteLine($"SizeDelta: ({transform.SizeDelta.X}, {transform.SizeDelta.Y})");
+            
+            var actualSize = inventoryPanel.GetSize();
+            var actualPosition = inventoryPanel.GetPosition();
+            Console.WriteLine($"Container actual size: {actualSize.X} x {actualSize.Y}");
+            Console.WriteLine($"Container actual position: ({actualPosition.X}, {actualPosition.Y})");
 
             return inventoryPanelObject;
         }
